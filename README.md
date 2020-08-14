@@ -6,7 +6,7 @@ Este proyecto busca crear un reporte de transparencia donde se detalle la inform
 
 ## ¿Por qué es importante? 
 
-Las contrataciones públicas suelen ser vistas como un mecanismo común de corrupción en el Perú. Esto se ve agravado en una situación de emergencia dado que se flexibiliza el procedimiento mismo, de acuerdo con las Ley de Contrataciones. En el caso del Covid-19, ello es aún más delicado si tenemos en cuenta al Artículo 5 del Decreto de Urgencia 022-2020 autoriza al Ministerio de Salud realizar transferencias financieras a favor de las unidades ejecutoras de salud de los Gobiernos Regionales para realizar contratos públicos, fin de garantizar la continuidad de los servicios de salud. En este sentido, es importante evaluar cómo esto se ha ido llevando en la práctica a través de un reporte de transparencia.
+En países con debilidad institucional, las contrataciones públicas son muchas veces vistas como un mecanismo donde suele haber corrupción. En el Perú, esto se ve agravado en una situación de emergencia dado que se flexibiliza el procedimiento mismo, de acuerdo con la Ley de Contrataciones. Asimismo, en el contexto actual, tenemos al Artículo 5 del Decreto de Urgencia 022-2020 que autoriza al Ministerio de Salud realizar transferencias financieras a favor de las unidades ejecutoras de salud de los Gobiernos Regionales para realizar contratos públicos,con el fin de garantizar la continuidad de los servicios de salud. En este sentido, es importante evaluar cómo esto se ha ido llevando en la práctica a través de un reporte de transparencia.
 
 
 ## EQUIPO:
