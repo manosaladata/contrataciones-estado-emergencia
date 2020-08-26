@@ -1,6 +1,6 @@
 ---
 title: "REPORTE DE CONTRATOS DIRECTOS "
-subtitle: "Durante el prediodo de emergencia"
+subtitle: "Durante el preriodo de emergencia"
 author: "Abner Francisco Casallo Trauco"
 date: "`r Sys.Date()`"
 output: tint::tintHtml
@@ -10,14 +10,30 @@ link-citations: yes
 
 ```{r setup, include=FALSE}
 library(tint)
+library(knitr)
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tint'))
 options(htmltools.dir.version = FALSE)
+#rpubs.upload.method = "internal"
 ```
 
 # SOBRE LA FUENTE...
+# Organismo Supervisor de las Contrataciones del Estado (OSCE)
 
-```{r fig-nocap-margin-first, fig.margin=T, fig.width=4, fig.height=4, cache=TRUE, echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+EL OSCE es el supervisor de los procesos de contratación pública que realizan las entidades del Estado.
+Actualmente cuenta con el Sistema Electrónico de Contrataciones del Estado (SEACE), que es el sistema electrónico que permite el intercambio de información y difusión sobre las contrataciones del Estado, buscando la transparencia de los procesos.
+
+
+
+```{r , fig.width=40, fig.height=40, cache=TRUE, echo=FALSE}
+
+url <- "https://mail.osce.gob.pe/osce/sites/default/files/styles/large/public/field/image/Exoneraci%C3%B3n%20bajo%20lupa%20OSCE-01_1.jpg"
+
+```
+
+<img src="`r url`" height="200px" width="300px" > 
+
+```{r , fig.margin=T, fig.width=4, fig.height=4, cache=TRUE, echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
 library(readxl)
 library(correlation)
 library(tidyverse)
@@ -108,4 +124,38 @@ knitr::kable(
 ```
 
 ¿QUIÉN ES EL NA? VER RUC E INFORMACIÓN EN LA RED.
-                             
+
+## ANÁLISIS DE PROVEEDORES QUE SON PERSONAS NATURALES
+### De acuerdo al número de contratos
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+
+proveedores1_nat<-filter(proveedores,TIPOPROVEEDOR=="Persona Natural")
+proveedores2_nat<-group_by(proveedores1_nat,PROVEEDOR,RUCPROV)
+proveedores2_nat<-summarize(proveedores2_nat,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+proveedores2_nat<-arrange(proveedores2_nat,desc(Contratos))
+proveedores2_nat<-head(proveedores2_nat,5)
+knitr::kable(
+  proveedores2_nat, caption = 'Proveedores personas naturales de acuerdo al número de contratos.'
+)
+
+```
+<br>
+</br>
+
+## ¿QUÉ OBJETO SE CONTRATÓ MÁS?
+
+
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+#Veamos los objetos del contrato:
+
+objetos<- select(contr_direc,"OBJETOCONTRACTUAL","PROVEEDOR","RUCPROV","TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+objetos_g<-group_by(objetos,OBJETOCONTRACTUAL)
+objetos_g<-summarize(objetos_g,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+objetos_g<-arrange(objetos_g,desc(Contratos))
+knitr::kable(
+  objetos_g, caption = 'Objetos contratados'
+)
+
+
+```
+

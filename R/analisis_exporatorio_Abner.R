@@ -8,6 +8,7 @@ setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
 
 #setwd("D:/ABCN/Github/contrataciones-estado-emergencia/data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
+#contr_direc<-na.omit(contr_direc)                       No usar, sino se irá casi toda la base se elimina.
 names(contr_direc)
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
 names(contr_direc)[28]="MONTO_SOLES_EN_MILLONES"
@@ -36,6 +37,7 @@ ggplot(contr_direc, aes(x = ENTIDAD_DEPARTAMENTO)) + coord_flip()+ stat_count (w
 #Lima es el que tiene más contratos, seguido de Ancash, La Libertad, Cajamarca y San Martín.
 
 #Ordenamos de acuerdo al monto 
+
 zonas %>%# 
   group_by(ENTIDAD_DEPARTAMENTO) %>% 
   summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),numero=n())%>%
@@ -64,6 +66,51 @@ contr_prove %>%
   View()
 
 
+#Veamos los objetos del contrato:
 
-boxplot(contr_direc$"MONTO SOLES EN MILLONES")
+objetos<- select(contr_direc, "OBJETOCONTRACTUAL","PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+#names(contr_direc)
+
+#Por el número de contratos
+objetos %>%# 
+  group_by(OBJETOCONTRACTUAL) %>% 
+  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n())%>%
+  arrange(desc(num_contr))%>%                                    
+  View() 
+
+#Por los montos
+objetos %>%# 
+  group_by(OBJETOCONTRACTUAL) %>% 
+  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n())%>%
+  arrange(desc(MONTOADJUDICADOSOLES))%>%                                    
+  View()
+
+#¿Qué tipo de objeto contrataba cada proveedor?
+#Por el número de contratos
+objetos %>%# 
+  group_by(PROVEEDOR,RUCPROVEEDOR,OBJETOCONTRACTUAL) %>% 
+  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n())%>%
+  arrange(desc(num_contr))%>%                                    
+  View() 
+
+#Por los montos
+objetos %>%# 
+  group_by(PROVEEDOR,RUCPROVEEDOR,OBJETOCONTRACTUAL) %>% 
+  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n())%>%
+  arrange(desc(MONTOADJUDICADOSOLES))%>%                                    
+  View() 
+
+#Por número en el caso de PERSONAS NATURALES
+
+objetos %>% 
+  filter(TIPOPROVEEDOR %in% "Persona Natural") %>%
+  group_by(PROVEEDOR,RUCPROVEEDOR,OBJETOCONTRACTUAL,)%>% 
+  summarize(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n()) %>% 
+  arrange(desc(num_contr))%>%
+  View()
+
+
+
+
+boxplot(contr_direc$"MONTO_SOLES_EN_MILLONES")
 #esquisser()
