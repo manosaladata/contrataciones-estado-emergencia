@@ -97,10 +97,11 @@ Lima es el que tiene un mayor monto en contrataciones, seguido de San Martín, C
 
 ## ANÁLISIS POR PROVEEDORES (EN GENERAL)
 
+
 ### DE ACUERDO AL NÚMERO DE CONTRATOS
 ```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
 
-proveedores<- select(contr_direc, "PROVEEDOR","RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+proveedores<- select(contr_direc, "PROVEEDOR","ENTIDAD", "RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
 proveedores2_num<-group_by(proveedores,PROVEEDOR,RUCPROV)
 proveedores2_num<-summarize(proveedores2_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
 proveedores2_num<-arrange(proveedores2_num,desc(Contratos))
@@ -123,7 +124,7 @@ knitr::kable(
 
 ```
 
-¿QUIÉN ES EL NA? VER RUC E INFORMACIÓN EN LA RED.
+¿QUIÉN ES EL NA? VER RUC E INFORMACIÓN EN LA RED. Según SUNAT es "L & M MEDICAL SUPPLIES" (SOCIEDAD ANONIMA CERRADA)
 
 ## ANÁLISIS DE PROVEEDORES QUE SON PERSONAS NATURALES
 ### De acuerdo al número de contratos
@@ -159,3 +160,31 @@ knitr::kable(
 
 ```
 
+
+## ENTIDAD
+
+### EN GENERAL DE ACUERDO AL NÚMERO DE CONTRATOS
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+
+entidad<- select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+entidad_num<-group_by(entidad,ENTIDAD,PROVEEDOR,RUCPROV)
+entidad_num<-summarize(entidad_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+entidad_num<-arrange(entidad_num,desc(Contratos))
+entidad_num<-head(entidad_num,5)
+knitr::kable(
+  entidad_num, caption = 'Entidades y Proveedores de acuerdo al número de contratos.'
+)
+
+```
+
+### CASO DE PERSONAS NATURALES
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+proveedores1_nat<-filter(proveedores,TIPOPROVEEDOR=="Persona Natural")
+proveedores2_nat<-group_by(proveedores1_nat,ENTIDAD,PROVEEDOR,RUCPROV)
+proveedores2_nat<-summarize(proveedores2_nat,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+proveedores2_nat<-arrange(proveedores2_nat,desc(Contratos))
+proveedores2_nat<-head(proveedores2_nat,5)
+knitr::kable(
+  proveedores2_nat, caption = 'Entidades y proveedores personas naturales de acuerdo al número de contratos.'
+)
+```
