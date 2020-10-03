@@ -1,6 +1,6 @@
 ---
 title: "ANÁLISIS DE CONTRATOS DIRECTOS EN LIMA"
-subtitle: "Del Proyecto <<Manos a la Data>>"
+subtitle: "Del Proyecto Manos a la Data"
 author: "Abner Francisco Casallo Trauco"
 date: "`r Sys.Date()`"
 output: tint::tintHtml
@@ -16,7 +16,9 @@ library(knitr)
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tint'))
 options(htmltools.dir.version = FALSE)
-#rpubs.upload.method = "internal"
+#<span style="color: red;">observacionestext</span>
+
+
 ```
 
 # SOBRE LA FUENTE...
@@ -40,6 +42,7 @@ library(readxl)
 library(correlation)
 library(tidyverse)
 library(esquisse)                        #Gráficos simples sin código.
+library(DT)
 setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)
@@ -77,6 +80,9 @@ zonas_num<-head(zonas_num,5)
 knitr::kable(
   zonas_num, caption = 'Departamentos de acuerdo al número de contratos.'
 )
+#library(paletteer)
+
+
 
 ```
 
@@ -94,6 +100,38 @@ knitr::kable(
   zonas_monto, caption = 'Departamentos de acuerdo al monto contratado'
 )
 
+#editado<-formatStyle(contr_direc, 1:4, color = JS("value % 1 === 0 ? 'red' : ''"))
+```
 
+
+##¿QUÉ OBJETO SE CONTRATÓ MÁS?
   
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+
+#ANÁLISIS DEPARTAMENTAL
+#DE ACUERDO AL NÚMERO DE OBJETOS
+objetos<- select(lima,"OBJETOCONTRACTUAL","PROVEEDOR","RUCPROV","TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+objetos_g<-group_by(objetos,OBJETOCONTRACTUAL)
+objetos_g<-summarize(objetos_g,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+objetos_g<-arrange(objetos_g,desc(Contratos))
+knitr::kable(
+  objetos_g, caption = 'Objetos contratados'
+)
+
+
+```
+
+### EN GENERAL DE ACUERDO AL NÚMERO DE CONTRATOS
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+
+entidad<- select(lima, "ENTIDAD", "PROVEEDOR","RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+entidad_num<-group_by(entidad,ENTIDAD,PROVEEDOR,RUCPROV)
+entidad_num<-summarize(entidad_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
+entidad_num<-arrange(entidad_num,desc(Contratos))
+entidad_num<-head(entidad_num,5)
+knitr::kable(
+  entidad_num, caption = 'Entidades y Proveedores de acuerdo al número de contratos.'
+)
+
+
 ```
