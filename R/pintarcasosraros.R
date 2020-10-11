@@ -7,6 +7,7 @@ library(readxl)
 library(correlation)
 library(tidyverse)
 library(esquisse)                        #Gráficos simples sin código.
+library(DT)
 setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)

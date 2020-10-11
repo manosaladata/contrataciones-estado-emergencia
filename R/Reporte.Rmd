@@ -41,7 +41,10 @@ library(esquisse)                        #Gráficos simples sin código.
 setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)
+#no usaremos el na.omit, salvo sea necesario para alguna columna
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
+
+
 names(contr_direc)[28]="MONTO_SOLES_EN_MILLONES"
 names(contr_direc)[31]="RUCPROV"
 #names(contr_direc)
@@ -49,6 +52,7 @@ options(scipen=999)                                  #Evita que salga en notaci�
 #sapply(contr_direc, class)                          #Analizamos la clase de cada columna. Ojo: FECHACONVOCATOERIA ESTÁ EN POSIXct y POSIxt q es formato de fecha
 
 boxplot(contr_direc$"MONTO_SOLES_EN_MILLONES")
+
 
 ```
 
@@ -58,12 +62,12 @@ Este es un breve reporte del análisis exploratorio de los procesos de contratac
 <br>
 </br>
 
+
 ## ANÁLISIS DEPARTAMENTAL 
 
 ### DE ACUERDO AL NÚMERO DE CONTRATOS
 
 ```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
-
 #ANÁLISIS DEPARTAMENTAL
 #DE ACUERDO AL NÚMERO DE CONTRATOS
 
@@ -78,6 +82,27 @@ knitr::kable(
 
 ```
 Lima es el que tiene más contratos, seguido de Ancash, La Libertad, Cajamarca y San Martín.
+
+```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+
+#tabla1 <- table(contr_direc$ENTIDAD_DEPARTAMENTO)
+#tabla1 <- prop.table(tabla1)
+#tabla1
+#barplot(tabla1, horiz=TRUE)
+
+library(ggplot2)
+ggplot(contr_direc, mapping=aes(x =ENTIDAD_DEPARTAMENTO)) + coord_flip()+ stat_count (width = 0.7) +
+    theme(   axis.title = element_text( face = "bold" ),
+             title=element_text(face = "bold" ),
+             legend.text=element_text(size=80)) + labs(title = "Contratos por departamentos"                            ,
+           caption = "Fuente: OSCE",
+           x="Departamentos", y="Cantidad de contratos") 
+
+
+#barplot(prop.table(table(contr_direc$ENTIDAD_DEPARTAMENTO)), horiz = TRUE) #En términos de frecuencias relativas
+#barplot(contr_direc$ENTIDAD_DEPARTAMENTO, ylim=c(0,100)) 
+
+```
 <br>
 </br>
 
@@ -105,11 +130,12 @@ proveedores<- select(contr_direc, "PROVEEDOR","ENTIDAD", "RUCPROV", "TIPOPROVEED
 proveedores2_num<-group_by(proveedores,PROVEEDOR,RUCPROV)
 proveedores2_num<-summarize(proveedores2_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
 proveedores2_num<-arrange(proveedores2_num,desc(Contratos))
+proveedores_total<-proveedores2_num
 proveedores2_num<-head(proveedores2_num,5)
 knitr::kable(
   proveedores2_num, caption = 'Proveedores e acuerdo al número de contratos.'
 )
-
+hist(proveedores_total$Contratos, main= "Distribución de contratos", xlab="contratos por proveedor",ylab="número de proveedores", col="purple")
 ```
 
 ### DE ACUERDO AL MONTO
