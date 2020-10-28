@@ -22,7 +22,7 @@ razon_social<-data[["razon_social"]]
 empleados<-data[["empleados"]]       #[] dentro pues es como un diccionario
 fecha_inscripción<-data[["fecha_inscripcion"]]
 representante_legal<-data[["representante_legal"]]  #Primero el diccionarion general, si creo todo junto no saldrá
-representante_legal_name<-representante_legal[[1]][["nombre"]]  #Ver las indicaciones de view para encontrar el código bien, DNI es el elemento 1
+representante_legal_name<-representante_legal[["DNI 07457070"]][["nombre"]]  #Ver las indicaciones de view para encontrar el código bien
 trabajadores_agosto<-empleados[["2020-08"]][["trabajadores"]]
 
 x <- data.frame("Nombre de la empresa"=razon_social, "Nombre del representante legal(agosto)" = representante_legal_name,

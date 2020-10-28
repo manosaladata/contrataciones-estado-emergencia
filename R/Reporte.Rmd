@@ -16,13 +16,12 @@ knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tint'))
 options(htmltools.dir.version = FALSE)
 #rpubs.upload.method = "internal"
 ```
-<div style="text-align: justify">
+
 # SOBRE LA FUENTE...
 # Organismo Supervisor de las Contrataciones del Estado (OSCE)
 
 EL OSCE es el supervisor de los procesos de contratación pública que realizan las entidades del Estado.
 Actualmente cuenta con el Sistema Electrónico de Contrataciones del Estado (SEACE), que es el sistema electrónico que permite el intercambio de información y difusión sobre las contrataciones del Estado, buscando la transparencia de los procesos.
-
 
 
 
@@ -34,39 +33,11 @@ url <- "https://mail.osce.gob.pe/osce/sites/default/files/styles/large/public/fi
 
 <img src="`r url`" height="200px" width="300px" > 
 
-# UN POCO SOBRE LAS CONTRATACIONES PÚBLICAS
-## Normativa vigente: 
-
- 
--Texto Único Ordenado de la Ley N° 30225, Ley de Contrataciones del Estado. </br> 
--Decreto Supremo N° 344-2018-EF, que aprueba el Reglamento de la Ley N° 30225.
-
-## Modalidades de contratación
-De acuerdo con los artículos 22 y ss., del TUO podemos distinguir las siguientes modalidades de contratación:Licitación Pública y Concurso Público, Adjudicación simplificada, Selección de consultores individuales, Comparación de precios, Subasta inversa electrónica,**Contrataciones directas**, entre otras.
-
-## El caso de las contrataciones directas
-
-Según el artículo 27 del TUO, excepcionalmente, las Entidades pueden contratar directamente con un determinado proveedor, entre otros casos,  ante una situación de emergencia derivada de
-acontecimientos catastróficos, situaciones de seguridad nacional o una emergencia sanitaria.
-
-## Impedimentos para ser proveedor
-De acuerdo con el artículo 11 del TUO, se excluyen, entre otros: </br> </br>
-- El Presidente y los Vicepresidentes de la República, los Congresistas de la República, los Jueces Supremos. Los Ministros y Viceministros de Estado. Conlas espeficiaciones del TUO </br>
--Los Gobernadores, Vicegobernadores y Consejeros de los Gobiernos Regionales. Con las espeficiaciones adicionales que da el TUO.</br>
--Los Jueces de las Cortes Superiores de Justicia, los Alcaldes y los Regidores.Con las espeficiaciones adicionales que da el TUO.</br>
--Los titulares de instituciones o de organismos públicos del Poder Ejecutivo, los funcionarios públicos, empleados de confianza, servidores públicos con poder de dirección o decisión, según la ley especial de la materia, y los gerentes de las empresas del Estado. Con las especificaciones adicionales del TUO.</br>
--Los servidores públicos no comprendidos en punto anterior, y los trabajadores de las empresas del Estado, en todo proceso de contratación en la Entidad a la que pertenecen, mientras ejercen su función. Con las especificaciones adicionales que da el TUO.</br>
--El cónyuge, conviviente o los parientes hasta el segundo grado de consanguinidad o afinidad de las personas señaladas en los literales precedentes. Con las especificaciones que da el TUO.</br>
--Condenados por concusión, peculado, corrupción de funcionarios, enriquecimiento ilícito, tráfico de influencias, delitos cometidos en remates o procedimientos de selección, o delitos equivalentes en caso estos hayan sido cometidos en otros países así como quienes admitieron la comisión de cualquiera de los delitos antes descritos ante alguna autoridad nacional o extranjera competente. 
-
-
-
 ```{r , fig.margin=T, fig.width=4, fig.height=4, cache=TRUE, echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
 library(readxl)
 library(correlation)
 library(tidyverse)
 library(esquisse)                        #Gráficos simples sin código.
-library(formattable)
 setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)
@@ -86,7 +57,7 @@ boxplot(contr_direc$"MONTO_SOLES_EN_MILLONES")
 ```
 
 
-# ANÁLISIS EXPLORATORIO
+# INTRODUCCIÓN
 Este es un breve reporte del análisis exploratorio de los procesos de contratación directa durante el estado de emergencia.
 <br>
 </br>
@@ -176,8 +147,6 @@ proveedores_monto<-head(proveedores_monto,5)
 knitr::kable(
   proveedores_monto, caption = 'Proveedores de acuerdo al monto.'
 )
-
-
 
 ```
 
