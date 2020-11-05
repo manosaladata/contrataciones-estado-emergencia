@@ -25,7 +25,7 @@ RUCs<-c("20523717759","20555589574","20419385442","20338570041","20293847038")
 
 server<-phantomjs(port=5015L) # cambiar el puerto si se opera en otra laptop, es conveniente.
 #Abrimos el navegador (con RSelenium)
-Browser <- remoteDriver(browserName = "edge", port=5015L) #browserName = "phantomjs"
+Browser <- remoteDriver(browserName = "phantomjs", port=5015L) #browserName = "edge"
 Browser$open()
 #Navegar la pÃÂ¡gina web que guardamos
 Browser$navigate(paste(UrlMadre,RUCs[1],"#sanciones"))
