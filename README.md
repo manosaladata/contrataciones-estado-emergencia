@@ -12,7 +12,8 @@ En países con debilidad institucional, las contrataciones públicas son muchas 
 ## EQUIPO:
 
 * Líder del proyecto: [Abner Casallo](https://www.linkedin.com/in/abner-francisco-casallo-trauco-b331b983/)
-* Miembros:
+* Miembros: 
+* [Jose Luis Laura](https://www.linkedin.com/in/jose-luis-laura-pumaleque/)
 
 
 
