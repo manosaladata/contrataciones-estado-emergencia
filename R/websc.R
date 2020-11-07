@@ -5,11 +5,13 @@ library(rvest)
 library(RSelenium)  #Pra trabajar con páginas dinámicas
 library(wdman)    #Navegador fantasma, permite usar rsDriver
 library(robotstxt)
+library(tidyverse)
 #library(strip)
 
 #---- Reselenium y Rvest #----
+RUCs<-c("20523717759","20555589574","20419385442","20338570041","20293847038")
 
-UrlMadre<-"https://apps.osce.gob.pe/perfilprov-ui/estadistica/20523717759#inhabMJ"
+UrlMadre<-paste0("https://apps.osce.gob.pe/perfilprov-ui/estadistica/",RUCs[2],"#inhabMJ")
 
 paths_allowed(paths = c(UrlMadre)) # TRUE
 
@@ -21,17 +23,15 @@ options(encoding = "utf-8")
 
 # Ejecutamos el servidor phantomjs -creamos un navegador fantasma
 
-RUCs<-c("20523717759","20555589574","20419385442","20338570041","20293847038")
-
 server<-phantomjs(port=5015L) # cambiar el puerto si se opera en otra laptop, es conveniente.
 #Abrimos el navegador (con RSelenium)
 Browser <- remoteDriver(browserName = "phantomjs", port=5015L) #browserName = "edge"
 Browser$open()
-#Navegar la p�¡gina web que guardamos
-Browser$navigate(paste(UrlMadre,RUCs[1],"#sanciones"))
+#Navegar la p?¡gina web que guardamos
+Browser$navigate(paste(UrlMadre))#,RUCs[1],"#sanciones"))
 Browser$screenshot(display=TRUE)
 
-# Decirle que act�ºe sobre la pÃ¡gina
+# Decirle que act?ºe sobre la pÃ¡gina
 
 Pagina_actual<-Browser$getPageSource()
 
@@ -52,41 +52,31 @@ pag_text<-PaginaRUC%>%
 
 pag_text
 
-text_list<-strsplit(pag_text, "")
-text_list
-sanciones_TCE_num_str<-text_list[[1]][63]
-sanciones_TCE_num_str
-sanciones<-as.integer(sanciones_TCE_num_str)
+sanciones<-str_match(pag_text, "Sanciones del TCE (\\s*(.*?)\\s*)El proveedor") #tidyverse
+sanciones<-strsplit(sanciones, "") 
+sanciones <-as.numeric(sanciones[[2]][2])
 sanciones
 
+
 #TRABAJANDO CON LAS PENAS
-PaginaRUC<-read_html(Pagina_actual[[1]])
-
-penalidades_text<-PaginaRUC%>%
-html_node(xpath = '//*[@id="penalidades"]/h6')%>%
-html_text()
-
-
-penalidades_list<-strsplit(penalidades_text, "")
-penalidades_num_str<-penalidades_list[[1]][14]
-penalidades<-as.integer(penalidades_num_str)
+penalidades<-str_match(pag_text, "Penalidades (\\s*(.*?)\\s*)El proveedor") #tidyverse
+penalidades<-strsplit(penalidades, "") 
+penalidades<-as.numeric(penalidades[[2]][2])
 penalidades
 
-#INHABILITACI�N JUDICIAL
-#text_list lee solo hasta 1000 coordenadas
-text_list_sec_part<-text_list[[1]][988:1500]
-text_list_sec_part
-inhab_ju_num_str<-text_list_sec_part[153]
-inhab_ju_num_str
-inhab_ju<-as.integer(inhab_ju_num_str)
-inhab_ju
 
-#INHABILITACI�N ADMINISTRATIVA
-text_list_sec_part
-inhab_ad_num_str<-text_list_sec_part[436]
-inhab_ad_num_str
-inhab_ad<-as.integer(inhab_num_str)
-inhab_ad
+#INHABILITACI?N JUDICIAL
+inhabilit_j<-str_match(pag_text, "mandato judicial (\\s*(.*?)\\s*)El proveedor")
+inhabilit_j<-strsplit(inhabilit_j, "") 
+inhabilit_j<-as.numeric(inhabilit_j[[2]][2])
+inhabilit_j
+#INHABILITACI?N ADMINISTRATIVA
+
+inhabilit_ad<-str_match(pag_text, "administrativa (\\s*(.*?)\\s*)El proveedor")
+inhabilit_ad<-strsplit(inhabilit_ad, "") 
+inhabilit_ad<-as.numeric(inhabilit_ad[[2]][2])
+inhabilit_ad
+
 
 #https://apps.osce.gob.pe/perfilprov-ui/ficha/20523717759
 #https://apps.osce.gob.pe/perfilprov-ui/ficha/20555589574
@@ -101,7 +91,7 @@ inhab_ad
 #20338570041
 #20293847038
 
-#cerrar la sesi�³n (Rselenium)
+#cerrar la sesi?³n (Rselenium)
 
 Browser$close()
 server$stop()
