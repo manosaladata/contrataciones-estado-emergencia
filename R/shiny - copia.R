@@ -4,7 +4,7 @@ library(readxl)
 library(tidyverse)
 
 
-setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
+setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)

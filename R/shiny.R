@@ -4,6 +4,7 @@ library(readxl)
 library(tidyverse)
 library(formattable)
 
+#ó
 customGreen0 = "#DeF7E9"
 customGreen = "#71CA97"
 customRed = "#ff7f7f"
@@ -25,23 +26,73 @@ proveedores2_num<-group_by(proveedores,PROVEEDOR,RUCPROV)
 proveedores2_num<-summarize(proveedores2_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
 proveedores2_num<-arrange(proveedores2_num,desc(Contratos))
 
+#CREACI?N DE FUNCIONES
+#USANDO EL API DE SUNAT:
+library(httr)
+library(jsonlite)
 
+#RUCS
+#IDEA: QUE EL USUARIO PONGA "INGRESE RUC" Y SALGA EL RESULTADO
+#Function
+sunat<- function(x){
+   RUC_str<-as.character(x)
+   url1<-paste("https://api.sunat.cloud/ruc/",RUC_str,sep = "", collapse = NULL)
+   url1
+   res<- GET(url1)
+   data<-fromJSON(content(res, type="text", encoding = "UTF-8"))
+   razon_social<-data[["razon_social"]]
+   empleados<-data[["empleados"]]
+   fecha_inscripcion<-data[["fecha_inscripcion"]]
+   representante_legal<-data[["representante_legal"]]
+   representante_legal_name<-representante_legal[[1]][["nombre"]]
+   trabajadores_agosto<-empleados[["2020-08"]][["trabajadores"]]
+   y <- data.frame("Nombre de la empresa"=razon_social, "Nombre del representante legal(agosto)" = representante_legal_name,
+                   "Trabajadores(agosto-2020)" = trabajadores_agosto,"fecha de inscripción"=fecha_inscripcion)
+   #x #para ver de una vez
+   #view(x)
+ }
+ #Trabajadores
+trabajadores<-function(x){
+   a<-sunat(x)
+   b<-a[1,3]
+   as.numeric(b)
+ }
 
+ #Testeo:
+#trabajadores(20555589574)
+
+#representante
+representante<-function(x){
+   a<-sunat(x)
+   b<-a[1,2]
+   b
+ }
+ #Testeo:
+ #representante(20555589574)
+
+# #fecha de inscripci?n
+ fecha<-function(x){
+   a<-sunat(x)
+   b<-a[1,4]
+   b
+ }
+
+ #fecha(20555589574)
 
 ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
                     #numericInput("ENTIDAD_DEPARTAMENTO",ENTIDAD_DEPARTAMENTO),
                     dashboardHeader(title="EXPLORADOR",
-                                    dropdownMenu(type="message",   #También se pueden trabajar con mensajes dinámicos con dropdownMenuOutput() usando un csv.
+                                    dropdownMenu(type="message",   #También se pueden trabajar con mensajes dinÃ¡micos con dropdownMenuOutput() usando un csv.
                                                  messageItem(from="Abner", message="Bienvenido"),
                                                  messageItem(from="Abner", message="Proyecto al 50%", icon=icon("bar-chart"), time = "21:00"),
                                                  messageItem(from="Abner", message="Trabajo parte del Proyecto Manos a la Data", icon=icon("vcard"), time = "10-10-2020")),
-                                    dropdownMenu(type="notifications",        #para todos los inputs dentro de deopdownMenu, también se puede automatizar con un csv.
+                                    dropdownMenu(type="notifications",        #para todos los inputs dentro de deopdownMenu, tambiÃ©n se puede automatizar con un csv.
                                                  notificationItem(
                                                    text="Esperamos que les sirva",
                                                    icon=icon("dashboard"),
                                                    status="success"),
                                                  notificationItem(
-                                                   text="Base de datos aún no actualizada",
+                                                   text="Base de datos aÃºn no actualizada",
                                                    icon=icon("warning"),
                                                    status="warning")),
                                     dropdownMenu(type="task",
@@ -53,51 +104,51 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                                                  taskItem(
                                                    value=60,
                                                    color="green",
-                                                   "Avance de gráficos y tablas"
+                                                   "Avance de grÃ¡ficos y tablas"
                                                  ),
                                                  taskItem(
                                                    value=10,
                                                    color="red",
-                                                   "automatización"
+                                                   "automatizaciÃ³n"
                                                  ))),
                     
                     dashboardSidebar(
                       #sliderInput(inputId = "n",                   #En el dashboardsiderbar no van box, queda feo si lo pones.                        
                       # "Number of contracts",
                       # 1,100,50),
-                      sidebarMenu(                                 #Esto permitirá que todo sea visto como un menú y se pueda abrir una nueva ventana por cada item.
+                      sidebarMenu(                                 #Esto permitirÃ¡ que todo sea visto como un menÃº y se pueda abrir una nueva ventana por cada item.
                         sidebarSearchForm("searchText","buttonSearch","Search"),
-                        menuItem("Análisis departamental", tabName="dep", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el gráfico de dashboardBody
-                        menuSubItem("Orden por número de contratos"),                                   #Más icons:https://fontawesome.com/icons?d=gallery 
+                        menuItem("AnÃ¡lisis departamental", tabName="dep", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
+                        menuSubItem("Orden por nÃºmero de contratos"),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
                         menuSubItem("Orden por monto contratado"),
-                        menuItem("Información de contratos por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
-                        menuSubItem("Orden por número de contratos"),
+                        menuItem("InformaciÃ³n de contratos por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
+                        menuSubItem("Orden por nÃºmero de contratos"),
                         menuSubItem("Orden por monto contratado"),
-                        menuItem("Información general de los proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
+                        menuItem("InformaciÃ³n general de los proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
                         menuSubItem("Proveedores con mayores contratos"),
-                        menuSubItem("Información de SUNAT"),
+                        menuSubItem("InformaciÃ³n de SUNAT"),
                         menuItem("Casos de alerta",icon = icon("dashboard")),
                         menuSubItem("Proveedores con sanciones previas"),
-                        menuSubItem("Prácticas poco comunes", tabName = "raros"),
+                        menuSubItem("PrÃ¡cticas poco comunes", tabName = "raros"),
                         menuItem("Nuevo", badgeLabel = "New", badgeColor ="green" ),
-                        textInput("text_input","Contáctenos al:", value="xxxxxx@gmail.com")
+                        textInput("text_input","ContÃ¡ctenos al:", value="xxxxxx@gmail.com")
                       )),
                     
-                    dashboardBody(                        #Esta parte dará el contenido (podría ir arriba, pero sale desordenado)
+                    dashboardBody(                        #Esta parte darÃ¡ el contenido (podrÃ­a ir arriba, pero sale desordenado)
                       tabItems(tabItem(tabName = "dep",
                                        fluidRow(
-                                         column(width=9,  #column da tamaño para todos sus , acá daremos 9 a todos
+                                         column(width=9,  #column da tamaÃ±o para todos sus , acÃ¡ daremos 9 a todos
                                                 infoBox("Transparencia","100%",icon=icon("thumbs-up")),
                                                 infoBox("Dato abiertos", "100%"),
                                                 infoBoxOutput("info")  #otro forma de introducir trabajando con server
                                          )),
                                        
-                                       fluidRow(valueBox("7 meses","Periodo de análisis",icon=icon("hourglass-3"),
+                                       fluidRow(valueBox("7 meses","Periodo de anÃ¡lisis",icon=icon("hourglass-3"),
                                                          color="yellow"),
                                                 valueBoxOutput("num")),
                                        
                                        fluidRow(
-                                         box(title= "Gráfico 1", status="primary"
+                                         box(title= "GrÃ¡fico 1", status="primary"
                                              ,solidHeader=T,  background="aqua", plotOutput("salida2"))
                                        )
                                        
@@ -114,10 +165,10 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                               fluidRow(
                                 box(plotOutput("num_contr")),
                                 box(title="Controles",status="warning",solidHeader=T,background = "red",
-                                    "USAR PARA ACOMODAR GRÁFICO", br(),"SI ES CONFUSO NO, USAR", #br() da espacio
+                                    "USAR PARA ACOMODAR GRÃFICO", br(),"SI ES CONFUSO NO, USAR", #br() da espacio
                                     sliderInput(inputId = "n",
-                                                "Números de contratos por proveedor",
-                                                1,80,40),    #c.11: se puede usar tabpanel para meter esto a la imagen como una opción.
+                                                "NÃºmeros de contratos por proveedor",
+                                                1,80,40),    #c.11: se puede usar tabpanel para meter esto a la imagen como una opciÃ³n.
                                     textInput("text_input","Anotaciones", value="ingrese sus anotaciones"))
                                 
                               )),
@@ -147,19 +198,19 @@ server <- function(input
   })
   
   output$num_contr<-renderPlot({
-    hist(proveedores2_num$Contratos, main= "Distribución de contratos",
-         xlab="contratos por proveedor",ylab="número de proveedores", col="purple", breaks=input$n)#Si no pones breaks no podrá usarse el slideInput
-    #hist(proveedores2_num$Contratos,xlab="contratos por proveedor",ylab="número de proveedores",
+    hist(proveedores2_num$Contratos, main= "DistribuciÃ³n de contratos",
+         xlab="contratos por proveedor",ylab="nÃºmero de proveedores", col="purple", breaks=input$n)#Si no pones breaks no podrÃ¡ usarse el slideInput
+    #hist(proveedores2_num$Contratos,xlab="contratos por proveedor",ylab="nÃºmero de proveedores",
     #breaks=input$n)              #Vistazo general
   })
-  output$info<-renderInfoBox({infoBox("Añadir algo","xxxxx",
+  output$info<-renderInfoBox({infoBox("AÃ±adir algo","xxxxx",
                                       icon=icon("bar-chart-o"))})
   output$num<-renderInfoBox({valueBox(count((contr_direc)[28]),"Contratos Analizados", #count function
                                       icon=icon("eye"),color="red")})  #Ahora queremos un value-box
   output$table_raros <- renderFormattable({formattable(proveedores2_num, list( ###con align alineamos: ",align =c("l","c","c","c","c", "c", "c", "c", "r")"
     `MONTOADJSOLES`= color_tile(customGreen, customGreen0),
     `Contratos`= formatter("span", style = ~ style(color = ifelse(`Contratos` <= 3, "green","red")),
-                           ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)))) ###(condición, dato)
+                           ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)))) ###(condiciÃ³n, dato)
     
   })
   
@@ -168,4 +219,6 @@ server <- function(input
 
 
 shinyApp(ui, server)
+
+
 
