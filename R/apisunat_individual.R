@@ -2,7 +2,7 @@ library(httr)
 library(jsonlite)
 #library(tidyverse)
 #library(DT)
-#httr::set_config(config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+httr::set_config(config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
 
 
 #RUCS
@@ -25,12 +25,12 @@ razon_social<-data[["razon_social"]]
 empleados<-data[["empleados"]]       #[] dentro pues es como un diccionario
 fecha_inscripcion<-data[["fecha_inscripcion"]]
 representante_legal<-data[["representante_legal"]]  #Primero el diccionarion general, si creo todo junto no saldrÃÂ¡
-representante_legal_name<-representante_legal[["1"]][["nombre"]]  #Ver las indicaciones de view para encontrar el cÃÂ³digo bien
+representante_legal_name<-representante_legal[[1]][["nombre"]]  #Ver las indicaciones de view para encontrar el cÃÂ³digo bien
 trabajadores_agosto<-empleados[["2020-08"]][["trabajadores"]]
 
 x <- data.frame("Nombre de la empresa"=razon_social, "Nombre del representante legal(agosto)" = representante_legal_name,
                 "Trabajadores(agosto-2020)" = trabajadores_agosto,"fecha de inscripciÃ³n"=fecha_inscripcion)
-view(x)
+#View(x)
 
 #Function
 sunat<- function(x){
@@ -47,15 +47,35 @@ representante_legal_name<-representante_legal[[1]][["nombre"]]
 trabajadores_agosto<-empleados[["2020-08"]][["trabajadores"]]
 x <- data.frame("Nombre de la empresa"=razon_social, "Nombre del representante legal(agosto)" = representante_legal_name,
                 "Trabajadores(agosto-2020)" = trabajadores_agosto,"fecha de inscripci�n"=fecha_inscripcion)
-#x #para ver de una vez
-#view(x)
+
+
 }
 
-trabajadores<-function(X){
-a<-sunat(20555589574)
+#Trabajadores
+trabajadores<-function(x){
+a<-sunat(x)
 b<-a[1,3]
 as.numeric(b)
 }
 
 #Testeo:
 trabajadores(20555589574)
+
+#representante
+representante<-function(x){
+  a<-sunat(x)
+  b<-a[1,2]
+  b
+}
+#Testeo:
+representante(20555589574)
+
+#fecha de inscripci�n
+fecha<-function(x){
+  a<-sunat(x)
+  b<-a[1,4]
+  b
+}
+
+#Testeo:
+fecha(20555589574)
