@@ -186,7 +186,7 @@ total[total=="NE"] <-"ND-MES"
 View(total)
 
 #GUARDAMOS NUEVA DATA:
-write.table(x=total, file="DATOS_CONSOLIDADOS", sep= ";",row.names=FALSE)
+write.table(x=total, file="DATOS_api", sep= ";",row.names=FALSE)
 
 
 
