@@ -3,81 +3,37 @@ library(shinydashboard)
 library(readxl)
 library(tidyverse)
 library(formattable)
-
+library(data.table)
 #ó
 customGreen0 = "#DeF7E9"
 customGreen = "#71CA97"
 customRed = "#ff7f7f"
 
-
+################################################################
+##############TRABAJANDO CON DATOS CONSOLIDADOS/WORKSPACE#################
+################################################################
 setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
+load("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data/Datos_consolidados.RData")
+remove(list=setdiff(ls(), "DATA_CONSOLIDADA_520"))  
+df<-DATA_CONSOLIDADA_520
+#names(df)
+names(df)<-c("Proveedor","RUC","Inscripción","Trabajadores","Monto",
+             "Contratos","Sanciones","Penalidades")
+
+redondeo <- function(x, k) trimws(format(round(x, k), nsmall=2))
+df[,5]<-sapply(df[,5],redondeo)
+
+####CARGAMOS
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
-#names(contr_direc)
+ #names(contr_direc)
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
+contr_direc[,28]<-sapply(contr_direc[,28],redondeo)
 names(contr_direc)[28]="MONTO_SOLES_EN_MILLONES"
 names(contr_direc)[31]="RUCPROV"
-#names(contr_direc)
-options(scipen=999)                                  #Evita que salga en notación científica (exponencial).
-#sapply(contr_direc, class)      
+# #names(contr_direc)
+options(scipen=999)                                 
 
-
-proveedores<- select(contr_direc, "PROVEEDOR","ENTIDAD", "RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
-proveedores2_num<-group_by(proveedores,PROVEEDOR,RUCPROV)
-proveedores2_num<-summarize(proveedores2_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
-proveedores2_num<-arrange(proveedores2_num,desc(Contratos))
-
-#CREACI?N DE FUNCIONES
-#USANDO EL API DE SUNAT:
-library(httr)
-library(jsonlite)
-
-#RUCS
-#IDEA: QUE EL USUARIO PONGA "INGRESE RUC" Y SALGA EL RESULTADO
-#Function
-sunat<- function(x){
-   RUC_str<-as.character(x)
-   url1<-paste("https://api.sunat.cloud/ruc/",RUC_str,sep = "", collapse = NULL)
-   url1
-   res<- GET(url1)
-   data<-fromJSON(content(res, type="text", encoding = "UTF-8"))
-   razon_social<-data[["razon_social"]]
-   empleados<-data[["empleados"]]
-   fecha_inscripcion<-data[["fecha_inscripcion"]]
-   representante_legal<-data[["representante_legal"]]
-   representante_legal_name<-representante_legal[[1]][["nombre"]]
-   trabajadores_agosto<-empleados[["2020-08"]][["trabajadores"]]
-   y <- data.frame("Nombre de la empresa"=razon_social, "Nombre del representante legal(agosto)" = representante_legal_name,
-                   "Trabajadores(agosto-2020)" = trabajadores_agosto,"fecha de inscripción"=fecha_inscripcion)
-   #x #para ver de una vez
-   #view(x)
- }
- #Trabajadores
-trabajadores<-function(x){
-   a<-sunat(x)
-   b<-a[1,3]
-   as.numeric(b)
- }
-
- #Testeo:
-#trabajadores(20555589574)
-
-#representante
-representante<-function(x){
-   a<-sunat(x)
-   b<-a[1,2]
-   b
- }
- #Testeo:
- #representante(20555589574)
-
-# #fecha de inscripci?n
- fecha<-function(x){
-   a<-sunat(x)
-   b<-a[1,4]
-   b
- }
-
- #fecha(20555589574)
+unit.scale = function(x) (x - min(x)) / (max(x) - min(x))
 
 ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
                     #numericInput("ENTIDAD_DEPARTAMENTO",ENTIDAD_DEPARTAMENTO),
@@ -174,8 +130,8 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                               )),
                       tabItem(tabName="raros",
                               fluidRow(
-                                column(width = 12,
-                                       box(formattableOutput("table_raros"))
+                                column(width = 12,  #De 1 a 12
+                                       box(DT::dataTableOutput("table_raros"))
                                 )
                               ))
                       
@@ -207,18 +163,25 @@ server <- function(input
                                       icon=icon("bar-chart-o"))})
   output$num<-renderInfoBox({valueBox(count((contr_direc)[28]),"Contratos Analizados", #count function
                                       icon=icon("eye"),color="red")})  #Ahora queremos un value-box
-  output$table_raros <- renderFormattable({formattable(proveedores2_num, list( ###con align alineamos: ",align =c("l","c","c","c","c", "c", "c", "c", "r")"
-    `MONTOADJSOLES`= color_tile(customGreen, customGreen0),
-    `Contratos`= formatter("span", style = ~ style(color = ifelse(`Contratos` <= 3, "green","red")),
-                           ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)))) ###(condiciÃ³n, dato)
+  output$table_raros <- DT::renderDataTable(as.datatable({formattable(df, align =c("c","c","c","c","c","c","c","c"), list( ###con align alineamos: ",align =c("l","c","c","c","c", "c", "c", "c", "r")"
+    `Contratos`= formatter("span", style = ~ style(color = ifelse(`Contratos` <= 3, "green","red"),font.weight = "bold"),
+                           ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)),
+    `Sanciones`= formatter("span", style = ~ style(color = ifelse(`Sanciones` ==0 , "green","red"),font.weight = "bold")),
+    `Penalidades`= formatter("span", style = ~ style(color = ifelse(`Penalidades` ==0 , "green","red"),font.weight = "bold"))
+    ,`Monto` = color_bar("green")
+    #,area(col = 2) ~ color_tile("#DeF7E9", "#71CA97")  #SOLO VALE PARA NÚMEROS
+    #,area(col = 4) ~ color_tile("#DeF7E9", "#71CA97")
+    #,`TRABAJADORES-AGOSTO` = color_bar("green",fun=unit.scale)
     
-  })
+    )) ###(condiciÃ³n, dato)
+  
+  }))
   
   
 }
 
-
-shinyApp(ui, server)
+names(df)
+shinyApp(ui = ui, server = server, options = list(height = 1080))
 
 
 
