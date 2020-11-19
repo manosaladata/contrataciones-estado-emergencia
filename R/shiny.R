@@ -74,18 +74,18 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                       # 1,100,50),
                       sidebarMenu(                                 #Esto permitirÃ¡ que todo sea visto como un menÃº y se pueda abrir una nueva ventana por cada item.
                         sidebarSearchForm("searchText","buttonSearch","Search"),
-                        menuItem("AnÃ¡lisis departamental", tabName="dep", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
-                        menuSubItem("Orden por nÃºmero de contratos"),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
+                        menuItem("Análisis departamental", tabName="dep", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
+                        menuSubItem("Por número de contratos"),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
+                        menuSubItem("Por monto"),
+                        menuItem("Por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
+                        menuSubItem("Por número de contratos"),
                         menuSubItem("Orden por monto contratado"),
-                        menuItem("InformaciÃ³n de contratos por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
-                        menuSubItem("Orden por nÃºmero de contratos"),
-                        menuSubItem("Orden por monto contratado"),
-                        menuItem("InformaciÃ³n general de los proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
-                        menuSubItem("Proveedores con mayores contratos"),
-                        menuSubItem("InformaciÃ³n de SUNAT"),
+                        menuItem("Información de proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
+                        menuSubItem("Proveedores con más contratos"),
+                        menuSubItem("Información de SUNAT"),
                         menuItem("Casos de alerta",icon = icon("dashboard")),
-                        menuSubItem("Proveedores con sanciones previas"),
-                        menuSubItem("PrÃ¡cticas poco comunes", tabName = "raros"),
+                        menuSubItem("Sanciones previas"),
+                        menuSubItem("Prácticas poco comunes", tabName = "raros"),
                         menuItem("Nuevo", badgeLabel = "New", badgeColor ="green" ),
                         textInput("text_input","ContÃ¡ctenos al:", value="xxxxxx@gmail.com")
                       )),
