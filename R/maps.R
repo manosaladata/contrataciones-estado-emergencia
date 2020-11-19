@@ -52,14 +52,17 @@ zonas <- group_by(zonas, DEPARTAMEN)
 zonas<-summarise(zonas,MONTO=sum(MONTO_SOLES_EN_MILLONES),numero=n())
 zonas<-arrange(zonas,desc(numero))
 zonas_numero<-arrange(zonas,desc(numero))
-  
-
+df_zonas<-as.data.frame(zonas)
+df_zonas_nolima<-df_zonas[-1,]
 ##########UNIMOS PARA MONTOS Y NÚMEROS###################
 departamentos_montos <- departamentos%>% 
   left_join(zonas)
 
-departamentos_numero <- departamentos%>% #Juntamos ambas bases de datos
-  left_join(zonas_numero)
+# departamentos_numero <- departamentos%>% #Juntamos ambas bases de datos
+#   left_join(zonas_numero)
+
+departamentos_nolima<- departamentos%>% #Juntamos ambas bases de datos
+  left_join(df_zonas_nolima)
 #################################################
 
 # ggplot(departamentos_montos) +
@@ -95,6 +98,7 @@ tm_shape(departamentos_montos) +
                color.light = 'black',
                position = c(0.5,0.03))
   #+tm_compass(position = c(0.05,0.85))
+
              
 # tm_shape(departamentos_montos) +
 #   tmap_options(inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
@@ -121,4 +125,26 @@ tm_shape(departamentos_montos) +
 # #+tm_compass(position = c(0.05,0.85))
 
 
-
+###########SIN LIMA########################
+tm_shape(departamentos_nolima) +
+  tmap_options(inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
+  tm_text('DEPARTAMEN',
+          size = 0.5,
+          fontface = 2,
+          fontfamily = 'Tw Cen MT Condensed')+
+  tm_polygons("MONTO",palette = "viridis")+ #Greens
+  tm_compass(type = "4star", size = 2.5, fontsize = 0.5,
+             color.dark = "gray60", text.color = "gray60",
+             position = c("left", "top"))  +
+  #tm_borders(col = "black")+
+  tm_layout(frame=FALSE,      #Sacamos el recuadro        
+            main.title = 'MONTOS POR DEPARTAMENTO',
+            main.title.size = 1.2,
+            fontface = 2,
+            fontfamily = 'Tw Cen MT Condensed',
+            main.title.position = c(0.2,0.5)) +
+  tm_scale_bar(size = 0.4,
+               width = 0.21,
+               color.dark = 'White',
+               color.light = 'black',
+               position = c(0.5,0.03))
