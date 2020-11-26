@@ -4,10 +4,17 @@ library(readxl)
 library(tidyverse)
 library(formattable)
 library(data.table)
+library(gridExtra)
+library(plotly)
 #ó
+library(sf)    #Permite relación geos
+library(ggrepel)
+library(tmap)
+
 customGreen0 = "#DeF7E9"
 customGreen = "#71CA97"
 customRed = "#ff7f7f"
+
 
 ################################################################
 ##############TRABAJANDO CON DATOS CONSOLIDADOS/WORKSPACE#################
@@ -15,12 +22,16 @@ customRed = "#ff7f7f"
 setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
 load("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data/Datos_consolidados.RData")
 remove(list=setdiff(ls(), "DATA_CONSOLIDADA_520"))  
+
+###############FUCIONES#########################
+unit.scale = function(x) (x - min(x)) / (max(x) - min(x))
+redondeo <- function(x, k) trimws(format(round(x, k), nsmall=2))
+
 df<-DATA_CONSOLIDADA_520
 #names(df)
 names(df)<-c("Proveedor","RUC","Inscripción","Trabajadores","Monto",
              "Contratos","Sanciones","Penalidades")
 
-redondeo <- function(x, k) trimws(format(round(x, k), nsmall=2))
 df[,5]<-sapply(df[,5],redondeo)
 
 ####CARGAMOS
@@ -33,9 +44,9 @@ names(contr_direc)[31]="RUCPROV"
 # #names(contr_direc)
 options(scipen=999)                                 
 
-unit.scale = function(x) (x - min(x)) / (max(x) - min(x))
 
-ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
+
+ui <- dashboardPage(title="Proyecto", skin="blue",  #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
                     #numericInput("ENTIDAD_DEPARTAMENTO",ENTIDAD_DEPARTAMENTO),
                     dashboardHeader(title="EXPLORADOR",
                                     dropdownMenu(type="message",   #También se pueden trabajar con mensajes dinÃ¡micos con dropdownMenuOutput() usando un csv.
@@ -74,10 +85,11 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                       # 1,100,50),
                       sidebarMenu(                                 #Esto permitirÃ¡ que todo sea visto como un menÃº y se pueda abrir una nueva ventana por cada item.
                         sidebarSearchForm("searchText","buttonSearch","Search"),
-                        menuItem("Análisis departamental", tabName="dep", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
-                        menuSubItem("Por número de contratos"),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
-                        menuSubItem("Por monto"),
-                        menuItem("Por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
+                        menuItem("Información General", tabName="rubros_funnel", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
+                        menuItem("Visión departamental",tabName = "dep_mn",icon = icon("arrow-alt-circle-right")),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
+                        menuSubItem("Por monto",tabName = "map_mon"),
+                        menuSubItem("Por número de contratos",tabName="map_num"),
+                        menuItem("Por entidad",tabName = "entidad_mn",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
                         menuSubItem("Por número de contratos"),
                         menuSubItem("Orden por monto contratado"),
                         menuItem("Información de proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
@@ -91,7 +103,7 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                       )),
                     
                     dashboardBody(                        #Esta parte darÃ¡ el contenido (podrÃ­a ir arriba, pero sale desordenado)
-                      tabItems(tabItem(tabName = "dep",
+                      tabItems(tabItem(tabName = "rubros_funnel",
                                        fluidRow(
                                          column(width=9,  #column da tamaÃ±o para todos sus , acÃ¡ daremos 9 a todos
                                                 infoBox("Transparencia","100%",icon=icon("thumbs-up")),
@@ -104,30 +116,46 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                                                 valueBoxOutput("num")),
                                        
                                        fluidRow(
-                                         box(title= "GrÃ¡fico 1", status="primary"
-                                             ,solidHeader=T,  background="aqua", plotOutput("salida2"))
+                                         # splitLayout(cellWidths = c(700,700),
+                                         #             box(title= "Gráfico 1", status="primary"
+                                         #     ,solidHeader=T,  background="aqua", plotOutput("map_mon")),
+                                                box(title="Rubros",status="primary",
+                                                    solidHeader = T,plotlyOutput("rubros_funnel"), width=15, height=700)
+                                             # ,box(title= "Gráfico 2",status="primary", solidHeader=T,
+                                             #      background="aqua",plotOutput("map_num")))
                                        )
                                        
                       ),
-                      tabItem(tabName = "entidad", h1("Entidades")),#,
-                      #fluidRow(
-                      #box(plotOutput("salida2")),
-                      #box(sliderInput(inputId = "n",
-                      #"Number of contracts",
-                      #1,100,50))
+                      tabItem(tabName = "entidad", h1("Entidades")),
+                      tabItem(tabName = "map_mon",fluidPage(box(plotOutput("map_mon")))),
                       
-                      #))),
                       tabItem(tabName = "hist",
                               fluidRow(
                                 box(plotOutput("num_contr")),
                                 box(title="Controles",status="warning",solidHeader=T,background = "red",
-                                    "USAR PARA ACOMODAR GRÃFICO", br(),"SI ES CONFUSO NO, USAR", #br() da espacio
+                                    "USAR PARA ACOMODAR GRÁFICO", br(),"SI ES CONFUSO NO, USAR", #br() da espacio
                                     sliderInput(inputId = "n",
-                                                "NÃºmeros de contratos por proveedor",
+                                                "Número de contratos por proveedor",
                                                 1,80,40),    #c.11: se puede usar tabpanel para meter esto a la imagen como una opciÃ³n.
                                     textInput("text_input","Anotaciones", value="ingrese sus anotaciones"))
                                 
                               )),
+                      tabItem(tabName = "map_num",
+                              fluidRow(
+                                box(plotOutput("map_num"))
+                              )),
+                      tabItem(tabName ="dep_mn",
+                              fluidPage(
+                                         column(width=6.5,plotOutput("num_dep")),
+                                         column(width=6.5,plotOutput("mont_dep"))
+                              )),
+                      tabItem(tabName ="entidad_mn",
+                              fluidPage(
+                                column(width=12,plotOutput("entidad_mont")),
+                                column(width=12,plotOutput("entidad_num"))
+                              )),
+                      
+        
                       tabItem(tabName="raros",
                               fluidRow(
                                 column(width = 12,  #De 1 a 12
@@ -143,22 +171,23 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
 server <- function(input
                    , output) {
   
-  output$salida2<-renderPlot({
-    ggplot(contr_direc, mapping=aes(x =ENTIDAD_DEPARTAMENTO)) + coord_flip()+ stat_count (width = 0.7) +
-      theme(   axis.title = element_text( face = "bold" ),
-               title=element_text(face = "bold" ),
-               legend.text=element_text(size=80)) + labs(title = "Contratos por departamentos"                            ,
-                                                         caption = "Fuente: OSCE",
-                                                         x="Departamentos", y="Cantidad de contratos")
-    #Vistazo general
-  })
+  output$num_dep<-renderPlot({num_dep})
+  output$mont_dep<-renderPlot({montos_dep})
+  output$entidad_num<-renderPlot({entidad_num})
+  output$entidad_mont<-renderPlot({entidad_mont})
+  
+  
+  
   
   output$num_contr<-renderPlot({
-    hist(proveedores2_num$Contratos, main= "DistribuciÃ³n de contratos",
+    hist(proveedores2_num$Contratos, main= "Distribución de contratos",
          xlab="contratos por proveedor",ylab="nÃºmero de proveedores", col="purple", breaks=input$n)#Si no pones breaks no podrÃ¡ usarse el slideInput
     #hist(proveedores2_num$Contratos,xlab="contratos por proveedor",ylab="nÃºmero de proveedores",
     #breaks=input$n)              #Vistazo general
   })
+  
+
+  
   output$info<-renderInfoBox({infoBox("AÃ±adir algo","xxxxx",
                                       icon=icon("bar-chart-o"))})
   output$num<-renderInfoBox({valueBox(count((contr_direc)[28]),"Contratos Analizados", #count function
@@ -177,7 +206,11 @@ server <- function(input
   
   }))
   
+  output$map_mon <- renderPlot({map_mon})
+  output$map_num <- renderPlot({map_num})
+  output$rubros_funnel <- renderPlotly({rubros_funnel})
   
+  rubros_funnel  
 }
 
 names(df)
