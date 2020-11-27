@@ -46,7 +46,7 @@ options(scipen=999)
 
 
 
-ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
+ui <- dashboardPage(title="Proyecto", skin="blue",  #da color al encabezado y nombre a la página (cuando abres con el explordor se nota)
                     #numericInput("ENTIDAD_DEPARTAMENTO",ENTIDAD_DEPARTAMENTO),
                     dashboardHeader(title="EXPLORADOR",
                                     dropdownMenu(type="message",   #También se pueden trabajar con mensajes dinÃ¡micos con dropdownMenuOutput() usando un csv.
@@ -86,10 +86,10 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                       sidebarMenu(                                 #Esto permitirÃ¡ que todo sea visto como un menÃº y se pueda abrir una nueva ventana por cada item.
                         sidebarSearchForm("searchText","buttonSearch","Search"),
                         menuItem("Información General", tabName="rubros_funnel", icon = icon("arrow-alt-circle-right")), #el tab Name=dep, permite relacionar el grÃ¡fico de dashboardBody
-                        menuItem("Visión departamental",tabName = "map",icon = icon("arrow-alt-circle-right")),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
-                        menuSubItem("Por monto",tabName = "mont_dep"),
-                        menuSubItem("Por número de contratos",tabName="num_dep"),
-                        menuItem("Por entidad",tabName = "entidad",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
+                        menuItem("Visión departamental",tabName = "dep_mn",icon = icon("arrow-alt-circle-right")),                                   #MÃ¡s icons:https://fontawesome.com/icons?d=gallery 
+                        menuSubItem("Por monto",tabName = "map_mon"),
+                        menuSubItem("Por número de contratos",tabName="map_num"),
+                        menuItem("Por entidad",tabName = "entidad_mn",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
                         menuSubItem("Por número de contratos"),
                         menuSubItem("Orden por monto contratado"),
                         menuItem("Información de proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
@@ -127,7 +127,7 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                                        
                       ),
                       tabItem(tabName = "entidad", h1("Entidades")),
-                      tabItem(tabName = "mont_dep",fluidPage(box(plotOutput("mont_dep")))),
+                      tabItem(tabName = "map_mon",fluidPage(box(plotOutput("map_mon")))),
                       
                       tabItem(tabName = "hist",
                               fluidRow(
@@ -140,17 +140,21 @@ ui <- dashboardPage(title="Proyecto", skin="red", #da color al encabezado y nomb
                                     textInput("text_input","Anotaciones", value="ingrese sus anotaciones"))
                                 
                               )),
-                      tabItem(tabName = "num_dep",
+                      tabItem(tabName = "map_num",
                               fluidRow(
-                                box(plotOutput("num_dep"))
+                                box(plotOutput("map_num"))
                               )),
-                      tabItem(tabName ="map",
-                              fluidRow(splitLayout(cellWidths = c(700,700),   #Juntamos dos plots
-                                                   box(title= "Gráfico 1", status="primary",
-                                                       solidHeader=T,  background="aqua", plotOutput("map_mon")),
-                                                   box(title= "Gráfico 2",status="primary", solidHeader=T,
-                                                       background="aqua",plotOutput("map_num")))
+                      tabItem(tabName ="dep_mn",
+                              fluidPage(
+                                column(width=6.5,plotOutput("num_dep")),
+                                column(width=6.5,plotOutput("mont_dep"))
                               )),
+                      tabItem(tabName ="entidad_mn",
+                              fluidPage(
+                                column(width=12,plotOutput("entidad_mont")),
+                                column(width=12,plotOutput("entidad_num"))
+                              )),
+                      
                       
                       tabItem(tabName="raros",
                               fluidRow(
@@ -168,8 +172,11 @@ server <- function(input
                    , output) {
   
   output$num_dep<-renderPlot({num_dep})
-  
   output$mont_dep<-renderPlot({montos_dep})
+  output$entidad_num<-renderPlot({entidad_num})
+  output$entidad_mont<-renderPlot({entidad_mont})
+  
+  
   
   
   output$num_contr<-renderPlot({
@@ -208,8 +215,6 @@ server <- function(input
 
 names(df)
 shinyApp(ui = ui, server = server, options = list(height = 1080))
-
-
 
 
 

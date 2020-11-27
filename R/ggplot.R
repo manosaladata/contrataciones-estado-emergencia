@@ -107,7 +107,7 @@ entidad_mo<- select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPRO
 entidad_mont<-ggplot(entidad_mo, aes(x=MONTOADJSOLES,y=ENTIDAD))+
   geom_bar(stat="identity", position="dodge", fill="white",col="steelblue")+
   labs(title="TOP 10 DE ENTIDADES CON MAYOR MONTO DE CONTRATACIÓN", 
-       y="Entidad", x="Monto contratado", caption="Manos a la data")+
+       y="Entidad", x="Monto contratado (en millones de soles)", caption="Manos a la data")+
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),

@@ -90,8 +90,8 @@ ui <- dashboardPage(title="Proyecto", skin="blue",  #da color al encabezado y no
                         menuSubItem("Por monto",tabName = "map_mon"),
                         menuSubItem("Por número de contratos",tabName="map_num"),
                         menuItem("Por entidad",tabName = "entidad_mn",icon = icon("arrow-alt-circle-right")), #el tab Name=contract, permite relacionar el histograma
-                        menuSubItem("Por número de contratos"),
-                        menuSubItem("Orden por monto contratado"),
+                        menuSubItem("Por número de contratos", tabName = "entidt_num"),
+                        menuSubItem("Orden por monto contratado",tabName="entidt_mon"),
                         menuItem("Información de proveedores",tabName = "hist",icon = icon("arrow-alt-circle-right")),
                         menuSubItem("Proveedores con más contratos"),
                         menuSubItem("Información de SUNAT"),
@@ -154,13 +154,14 @@ ui <- dashboardPage(title="Proyecto", skin="blue",  #da color al encabezado y no
                                 column(width=12,plotOutput("entidad_mont")),
                                 column(width=12,plotOutput("entidad_num"))
                               )),
+                      tabItem(tabName="entidt_num",
+                              fluidPage(DT::dataTableOutput("entidt_num"))),
+                      tabItem(tabName="entidt_mon",
+                              fluidPage(DT::dataTableOutput("entidt_mon"))),
                       
-        
                       tabItem(tabName="raros",
-                              fluidRow(
-                                column(width = 12,  #De 1 a 12
-                                       box(DT::dataTableOutput("table_raros"))
-                                )
+                              fluidRow(DT::dataTableOutput("table_raros")
+                                
                               ))
                       
                       ),
@@ -198,13 +199,12 @@ server <- function(input
     `Sanciones`= formatter("span", style = ~ style(color = ifelse(`Sanciones` ==0 , "green","red"),font.weight = "bold")),
     `Penalidades`= formatter("span", style = ~ style(color = ifelse(`Penalidades` ==0 , "green","red"),font.weight = "bold"))
     ,`Monto` = color_bar("green")
-    #,area(col = 2) ~ color_tile("#DeF7E9", "#71CA97")  #SOLO VALE PARA NÚMEROS
-    #,area(col = 4) ~ color_tile("#DeF7E9", "#71CA97")
-    #,`TRABAJADORES-AGOSTO` = color_bar("green",fun=unit.scale)
     
-    )) ###(condiciÃ³n, dato)
+   )) 
   
   }))
+  output$entidt_num<-DT::renderDataTable(entidad_dt_num)
+  output$entidt_mon<-DT::renderDataTable(entidad_dt_mon)
   
   output$map_mon <- renderPlot({map_mon})
   output$map_num <- renderPlot({map_num})

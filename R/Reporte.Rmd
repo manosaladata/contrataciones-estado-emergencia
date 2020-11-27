@@ -38,7 +38,7 @@ library(readxl)
 library(correlation)
 library(tidyverse)
 library(esquisse)                        #Gráficos simples sin código.
-setwd("D:/GITHUB-PROYECTOS BEST/contrataciones-estado-emergencia/Data")
+setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 #names(contr_direc)
 #no usaremos el na.omit, salvo sea necesario para alguna columna
@@ -157,7 +157,7 @@ knitr::kable(
 ```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
 
 proveedores1_nat<-filter(proveedores,TIPOPROVEEDOR=="Persona Natural")
-proveedores2_nat<-group_by(proveedores1_nat) #SOLO 1!
+proveedores2_nat<-group_by(proveedores1_nat,PROVEEDOR, RUCPROV) #Varios cruces, no solo de pers.nat. acumulados.
 proveedores2_nat<-summarize(proveedores2_nat,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
 proveedores2_nat<-arrange(proveedores2_nat,desc(Contratos))
 proveedores2_nat<-head(proveedores2_nat,5)
@@ -193,7 +193,7 @@ knitr::kable(
 ```{r  , cache=TRUE,echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
 
 entidad<- select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROV", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
-entidad_num<-group_by(entidad,ENTIDAD)  #Solo 1, sino se duplican
+entidad_num<-group_by(entidad,ENTIDAD,PROVEEDOR,RUCPROV)  #Solo 1, sino se duplican
 entidad_num<-summarize(entidad_num,MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())
 entidad_num<-arrange(entidad_num,desc(Contratos))
 entidad_num<-head(entidad_num,5)
