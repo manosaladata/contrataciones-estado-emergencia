@@ -1,20 +1,17 @@
 ########GRÁFICOS CON GGPLOT##################
 library(readxl)
-library(correlation)
 library(tidyverse)
-library(esquisse)                        #GrÃ¡ficos simples sin cÃ³digo.
-library(plotly)
 
+redondeo <- function(x, k) as.numeric(trimws(format(round(x, k), nsmall=2)))
 #1. 
 ###########################################################
 #########################DATA##############################
 setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
 
-
 #setwd("D:/ABCN/Github/contrataciones-estado-emergencia/data")
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 names(contr_direc)
-contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
+contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)#NO APLICAR REDONDEO, ESTÁ EN MILLONES
 names(contr_direc)[28]="MONTO_SOLES_EN_MILLONES"
 names(contr_direc)[31]="RUCPROVEEDOR"
 options(scipen=999) 
@@ -33,6 +30,8 @@ n_dep<-zonas %>%#
   summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),numero=n())%>%
   arrange(desc(numero))%>%
   as.data.frame()
+n_dep[,2]<-sapply(n_dep[,2],redondeo)
+#n_dep
 
 num_dep<-ggplot(n_dep, aes(x =numero, y=ENTIDAD_DEPARTAMENTO))+ 
   geom_bar(stat="identity", position="dodge",fill="white",col="steelblue")+
@@ -49,11 +48,15 @@ num_dep<-ggplot(n_dep, aes(x =numero, y=ENTIDAD_DEPARTAMENTO))+
 
 #2.1.2 MONTO
 
-monto_dep<-zonas %>%# 
+monto_dep<-zonas %>%
   group_by(ENTIDAD_DEPARTAMENTO) %>% 
-  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),numero=n())%>%
-  arrange(desc(MONTOADJUDICADOSOLES))%>%
+  summarise(MONTO=sum(MONTO_SOLES_EN_MILLONES))%>%
+  arrange(desc(MONTO))%>%
   as.data.frame()
+
+monto_dep[,2]<-sapply(monto_dep[,2],redondeo)
+names(monto_dep)[1]="DEPARTAMENTO"
+names(monto_dep)[2]="MONTO(millones)"
 
 montos_dep<-ggplot(monto_dep, aes(x =ENTIDAD_DEPARTAMENTO, y=MONTOADJUDICADOSOLES))+ 
   geom_bar(stat="identity", position="dodge", fill="white",col="steelblue")+
@@ -74,13 +77,16 @@ montos_dep<-ggplot(monto_dep, aes(x =ENTIDAD_DEPARTAMENTO, y=MONTOADJUDICADOSOLE
 
 entidad_n<- select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
   group_by(ENTIDAD)%>%
-  summarize(MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())%>%
+  summarize(Contratos=n())%>%
   arrange(desc(Contratos))%>%
   head(10)
+
+  
 
 #PROYECTO ESPECIAL PARA LA PREPARACION Y DESARROLLO DE LOS XVIII JUEGOS PANAMERICANOS DEL 2019
 #Nombre muy largo, arruina el gráfico, lo corregimos:
 entidad_n[10,1]<-"PROYECTO -XVIII JUEGOS PANAMERICANOS DEL 2019"
+
 
 entidad_num<-ggplot(entidad_n, aes(x=Contratos,y=ENTIDAD))+
   geom_bar(stat="identity", position="dodge", fill="white",col="steelblue")+
@@ -95,14 +101,14 @@ entidad_num<-ggplot(entidad_n, aes(x=Contratos,y=ENTIDAD))+
         plot.subtitle = element_text(hjust = 0.5),
         axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
 
-#entidad_num
 
-#3.1.2
+#3.1.2 ###POR MONTO#################
 entidad_mo<- select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
   group_by(ENTIDAD)%>%
   summarize(MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())%>%
   arrange(desc(MONTOADJSOLES))%>%
   head(10)
+
 
 entidad_mont<-ggplot(entidad_mo, aes(x=MONTOADJSOLES,y=ENTIDAD))+
   geom_bar(stat="identity", position="dodge", fill="white",col="steelblue")+
@@ -117,4 +123,3 @@ entidad_mont<-ggplot(entidad_mo, aes(x=MONTOADJSOLES,y=ENTIDAD))+
         plot.subtitle = element_text(hjust = 0.5),
         axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
 
-#entidad_mont

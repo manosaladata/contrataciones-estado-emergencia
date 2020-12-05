@@ -3,20 +3,23 @@ library(tidyverse)
 library(ggrepel)
 library(tmap)
 library(readxl)
+library(leaflet)
+
+
 #https://www.geogpsperu.com/2018/02/limite-departamental-politico-shapefile.html
-#####Directorio y data##############################################
+
+#####Directorio y Data##############################################
 setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data/Mapas_depar")
 
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
-#contr_direc<-na.omit(contr_direc)                       No usar, sino se irÃ¡ casi toda la base se elimina.
-#names(contr_direc)
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
 names(contr_direc)[28]="MONTO_SOLES_EN_MILLONES"
 names(contr_direc)
-options(scipen=999)                                  #Evita que salga en notaciÃ³n cientÃ­fica (exponencial).
-sapply(contr_direc, class)                          #Analizamos la clase de cada columna. Ojo: FECHACONVOCATOERIA ESTÃ EN POSIXct y POSIxt q es formato de fecha
+options(scipen=999)                                 
 
-#############################################################
+
+
+################Usamos el .shp#############################################
 
 
 departamentos<-st_read("DEPARTAMENTOS.shp")            ###OJO, SE REQUIEREN TODOS LOS ARCHIVOS
@@ -34,12 +37,6 @@ ggplot(data = departamentos %>%
 departamentos <- departamentos %>% mutate(centroid = map(geometry, st_centroid), 
                                           coords = map(centroid,st_coordinates), 
                                           coords_x = map_dbl(coords, 1), coords_y = map_dbl(coords,2))
-
-ggplot(data = departamentos) +
-  geom_sf(fill="red", color="white")+ 
-  geom_text_repel(mapping = aes(coords_x, coords_y, label = DEPARTAMEN), size = 2.25) 
-
-
 
 
 
@@ -65,7 +62,7 @@ departamentos_numero <- departamentos%>%
 
 
 map_mon<-tm_shape(departamentos_montos) +
-  tmap_options(inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
+  tmap_options(bg.color = "green",inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
   tm_text('DEPARTAMEN',
           size = 0.5,
           fontface = 2,
@@ -92,11 +89,11 @@ map_mon<-tm_shape(departamentos_montos) +
                color.light = 'black',
                position = c(0.5,0.03))
 
-
+map_mon<-tmap_leaflet(map_mon)
 
 ###########Por número
 map_num<-tm_shape(departamentos_numero ) +
-  tmap_options(inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
+  tmap_options(bg.color = "green",inner.margins = c(0.1,0.1, 0.02,0.01)) +   #ubicamos a la leyenda
   tm_text('DEPARTAMEN',
           size = 0.5,
           fontface = 2,
@@ -122,4 +119,6 @@ map_num<-tm_shape(departamentos_numero ) +
                color.dark = 'White',
                color.light = 'black',
                position = c(0.5,0.03))
-map_num
+
+
+

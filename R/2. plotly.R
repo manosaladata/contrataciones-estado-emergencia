@@ -1,7 +1,6 @@
+
 library(readxl)
-library(correlation)
 library(tidyverse)
-library(esquisse)                        #GrÃ¡ficos simples sin cÃ³digo.
 library(plotly)
 
 setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
@@ -24,10 +23,15 @@ objetos<- select(contr_direc, "OBJETOCONTRACTUAL","PROVEEDOR","RUCPROVEEDOR", "F
 
 tipo_convo<-objetos %>%# 
   group_by(RUBROS) %>% 
-  summarize(num_contr=n()) %>%
-  arrange(num_contr) 
+  summarize(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n()) %>%
+  arrange(MONTOADJUDICADOSOLES) 
 
-tipo_convo
+tipo_convo_n<-objetos %>%# 
+  group_by(RUBROS) %>% 
+  summarize(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),num_contr=n()) %>%
+  arrange(num_contr) 
+#view(tipo_convo)
+#tipo_convo
 
 fechas_convo<-objetos %>%# 
   group_by(FECHACONVOCATORIA) %>% 
@@ -37,7 +41,7 @@ fechas_convo<-objetos %>%#
 rubros_funnel<-plot_ly()  %>%
   add_trace(
     type = "funnel",
-    x = tipo_convo$num_contr,
+    x = tipo_convo$MONTOADJUDICADOSOLES,
     y = tipo_convo$RUBROS,
     #textposition = "inside",
     textinfo = "value+percent total",
@@ -47,9 +51,30 @@ rubros_funnel<-plot_ly()  %>%
                   line = list(width = c(4, 2, 2, 3, 1, 1,1,1,1,1,1,1,1), color = c("wheat", "wheat", "wheat", "wheat", "wheat",
                                                                                    "wheat", "blue", "wheat", "wheat","wheat","wheat",
                                                                                    "wheat"))))%>%
-  layout(yaxis = list(categoryarray = c("a","b","c",
+  layout(#title="RUBROS POR MONTO",
+    yaxis = list(categoryarray = c("a","b","c",
                                         "d","e","f","g",
                                         "h","i",
                                         "j","k","l")))
 
+rubros_funnel_n<-plot_ly()  %>%
+  add_trace(
+    type = "funnel",
+    x = tipo_convo_n$num_contr,
+    y = tipo_convo_n$RUBROS,
+    #textposition = "inside",
+    textinfo = "value+percent total",
+    opacity = 0.65,
+    marker = list(color = c("tan", "lightsalmon", "tan", "teal", "silver","silver","silver",
+                            "silver","red","red","red","red"),
+                  line = list(width = c(4, 2, 2, 3, 1, 1,1,1,1,1,1,1,1), color = c("wheat", "wheat", "wheat", "wheat", "wheat",
+                                                                                   "wheat", "blue", "wheat", "wheat","wheat","wheat",
+                                                                                   "wheat"))))%>%
+  layout(#title="RUBROS POR MONTO",
+    yaxis = list(categoryarray = c("a","b","c",
+                                   "d","e","f","g",
+                                   "h","i",
+                                   "j","k","l")))
+
 rubros_funnel
+rubros_funnel_n
