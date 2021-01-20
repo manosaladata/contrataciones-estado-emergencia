@@ -1,0 +1,16 @@
+Package: contratosgolem
+Title: covidcontracts
+Version: 0.0.0.9000
+Authors@R: person('Abner Francisco', 'Casallo Trauco', email = 'abner.casallo@unmsm.edu.pe', role = c('cre', 'aut'))
+Description: Este paquete nos permite analizar los contratos directos
+  realizados en el Perú durante el periodo de estado de emergencia en el 2020
+License: What license is it under?
+Imports: 
+    config,
+    golem,
+    shiny
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat

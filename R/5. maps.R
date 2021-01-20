@@ -4,12 +4,12 @@ library(ggrepel)
 library(tmap)
 library(readxl)
 library(leaflet)
-
+library("leaflet.extras")
 
 #https://www.geogpsperu.com/2018/02/limite-departamental-politico-shapefile.html
 
 #####Directorio y Data##############################################
-setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data/Mapas_depar")
+#setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/Data")
 
 contr_direc <- read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)
@@ -89,7 +89,96 @@ map_mon<-tm_shape(departamentos_montos) +
                color.light = 'black',
                position = c(0.5,0.03))
 
-map_mon<-tmap_leaflet(map_mon)
+  map_mon<-tmap_leaflet(map_mon)
+
+#USAR:
+# addProviderTiles(map_mon, providers$Stamen.Watercolor, group = "Stamen Watercolor", options = providerTileOptions(noWrap = TRUE),
+#                  ) %>%
+#   addProviderTiles(providers$OpenStreetMap.Mapnik, group = "Open Street Map", options = providerTileOptions(noWrap = TRUE))
+
+park_card <- function (park_Name, park_Code, park_State, park_Acres, park_Latitude, park_Longitude) {
+  
+  card_content <- paste0("<style>div.leaflet-popup-content {width:auto !important;}</style>",
+                         "<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.1/css/all.css' integrity='sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr' crossorigin='anonymous'>",
+                         "<table style='width:100%;'>",
+                         "<tr>",
+                         "<th><b><h2 style='text-align: left;'>",park_Name,"</h2></b></th>",
+                         "<th><img style = 'border:1px solid black;' src='https://www.crwflags.com/art/states/",park_State,".gif' alt='flag' title='Flag of ",state.name[match(park_State,state.abb)]," ' width=80></th>",
+                         "</tr>",
+                         "</table>",
+                         "<div class='flip-card'>",
+                         "<div class='flip-card-inner'>",
+                         "<div class='flip-card-front'>",
+                         "<table style='width:100%;'>",
+                         "<tr>",
+                         "<td colspan='2'>",park_image(park_Name),"</td>",
+                         "</tr>",
+                         "<tr>",
+                         "<td style='padding: 5px;'><h4><b>Code: </b>",park_Code,"</h4></td>",
+                         "<td style='padding: 5px;'><h4><b>Acres: </b>",format(park_Acres, big.mark = ' '),"</h4></td>",
+                         "</tr>",
+                         "<tr>",
+                         "<td style='padding: 5px;'><h4><b>Latitude: </b>",park_Latitude,"</h4></td>",
+                         "<td style='padding: 5px;'><h4><b>Longitude: </b>",park_Longitude,"</h4></td>",
+                         "</tr>",
+                         "</table>",
+                         "</div>",
+                         "<div class='flip-card-back'>",
+                         "<h3>Media links</h3> ",
+                         "<hr>",
+                         "<table style='width:80%;'>",
+                         "<tr>",
+                         "<td style='text-align: left; padding-left: 25px;'><h4>Official page:</h4></td>",
+                         "<td><a style='color:white;' href='https://www.nps.gov/",park_Code,"/index.htm' target='_blank'><i class='fas fa-globe fa-2x'></i></a></td>",
+                         "</tr>",
+                         "<tr>",
+                         "<td style='text-align: left; padding-left: 25px;'><h4>Wikipedia page:<h4></td>",
+                         "<td><a style='color:white' href='https://en.wikipedia.org/wiki/",park_Name,"' target='_blank'><i class='fab fa-wikipedia-w fa-2x'></i></td></p>",
+                         "</tr>",        
+                         "<tr>",
+                         "<td style='text-align: left; padding-left: 25px;'><h4>Pictures:<h4></td>",
+                         "<td><a style='color:white' href='https://www.google.com/search?tbm=isch&q=",park_Name,"&tbs=isz:m' target='_blank'><i class='fas fa-images fa-2x'></i></a></td>",
+                         "</tr>",
+                         "<tr>",
+                         "<td style='text-align: left; padding-left: 25px;'><h4>Youtube videos:<h4></td>",
+                         "<td><a style='color:white' href='https://www.youtube.com/results?search_query=",park_Name,"' target='_blank'><i class='fab fa-youtube fa-2x'></i></td>",
+                         "</tr>",
+                         "</table>",
+                         "</div>",
+                         "</div>",
+                         "</div>"
+  )
+  
+  return(card_content)
+  
+}
+map_mon
+
+map_mon<-addProviderTiles(map_mon,providers$Stamen.Watercolor, group = "Stamen Watercolor", options = providerTileOptions(noWrap = TRUE)) %>%#, minZoom = 4)) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik, group = "Open Street Map", options = providerTileOptions(noWrap = TRUE)) %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group = "Nasa Earth at Night", options = providerTileOptions(noWrap = TRUE)) %>%
+  addProviderTiles(providers$Stamen.TerrainBackground, group = "Stamen Terrain Background", options = providerTileOptions(noWrap = TRUE)) %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Esri World Imagery", options = providerTileOptions(noWrap = TRUE)) %>%
+  addFullscreenControl() %>%
+  addLayersControl(
+    baseGroups = c("Stamen Watercolor","Open Street Map","Nasa Earth at Night","Stamen Terrain Background","Esri World Imagery"),
+    position = c("topleft"),
+    options = layersControlOptions(collapsed = TRUE)
+  )
+# code to load the park card once the click event on a marker is intercepted 
+
+observeEvent(input$map_mon_marker_click, { 
+  pin <- input$map_mon_marker_click
+  #print(Sys.time()) #uncomment to log coords
+  #print(pin) #uncomment to log coords
+  selectedPoint <- reactive(parks[departamentos$Latitude == pin$lat & departamentos$Longitude == pin$lng,])
+  leafletProxy("map_mon", data = selectedPoint()) %>% clearPopups() %>% 
+    addPopups(~Longitude,
+              ~Latitude,
+              #popup = ~park_card(selectedPoint()$ParkName, selectedPoint()$ParkCode, selectedPoint()$State, selectedPoint()$Acres, selectedPoint()$Latitude, selectedPoint()$Longitude)
+    )
+})
+
 
 ###########Por número
 map_num<-tm_shape(departamentos_numero ) +

@@ -7,8 +7,8 @@ library(data.table)
 ###############################################################
 #En esta parte trabajaremos solo con la base de datos de CONOSCE
 #################################################################
-
-redondeo <- function(x, k) as.numeric(trimws(format(round(x, k), nsmall=2)))
+#redondeo <- function(x, k) as.numeric(trimws(format(round(x, 2), nsmall=2)))
+redondeo <- function(x) as.numeric(round(x, 2))
 
 #I.
 ##################CARGADO Y LIMPIEZA############################
@@ -49,24 +49,19 @@ names(monto_dep)[2]="MONTO(millones)"
 #EN GENERAL
 entidaddt_mo<-select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
   group_by(ENTIDAD,PROVEEDOR,RUCPROVEEDOR)%>%
-  summarize(MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())%>%
-  arrange(desc(MONTOADJSOLES)) #%>%
+  summarize(`MONTO ADJUDICADO EN SOLES`= sum(MONTO_SOLES_EN_MILLONES), CONTRATOS=n())%>%
+  arrange(desc(`MONTO ADJUDICADO EN SOLES`)) #%>%
+
+entidaddt_mo[,4]<-sapply(entidaddt_mo[,4],redondeo)
 
 entidaddt_num<-select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
   group_by(ENTIDAD,PROVEEDOR,RUCPROVEEDOR)%>%
-  summarize(MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())%>%
-  arrange(desc(Contratos)) 
+  summarize(`MONTO ADJUDICADO EN SOLES`= sum(MONTO_SOLES_EN_MILLONES), CONTRATOS=n())%>%
+  arrange(desc(CONTRATOS)) 
 
-
+entidaddt_num[,4]<-sapply(entidaddt_num[,4],redondeo)
+#View(entidaddt_num)
 #PERSONAS NATURALES
-
-entidaddt_pnnum<-select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
-  filter(TIPOPROVEEDOR=="Persona Natural")%>%
-  group_by(PROVEEDOR,RUCPROVEEDOR)%>%
-  summarize(MONTOADJSOLES= sum(MONTO_SOLES_EN_MILLONES), Contratos=n())%>%
-  arrange(desc(Contratos)) #%>%
-#entidad_num<-head(entidad_num,5)
-
 
 
 
@@ -81,18 +76,17 @@ entidaddt_pnnum<-select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIP
 #   ,`Monto` = color_bar("green")
 # ))) 
 
-entidad_dt_mon<-as.datatable(formattable(entidaddt_mo, align =c("c","c","c","c"), list( 
-  `Contratos`= formatter("span", style = ~ formattable::style(color = ifelse(`Contratos` <= 3, "green","red"),font.weight = "bold"),
-                         ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)),
-  `MONTOADJSOLES` = color_bar("red")
+entidad_dt_mon<-as.datatable(formattable(entidaddt_mo, align =c("c","c","c","c","c"), list( 
+  `CONTRATOS`= formatter("span", style = ~ formattable::style(color = ifelse(`CONTRATOS` <= 3, "green","red"),font.weight = "bold"),
+                         ~ icontext(ifelse(`CONTRATOS` <= 3, "thumbs-up", "thumbs-down"),`CONTRATOS`)),
+  `MONTO ADJUDICADO EN SOLES` = color_bar("red")
 )))
 entidad_dt_mon
-entidad_dt_num<-as.datatable(formattable(entidaddt_num, align =c("c","c","c","c"), list( 
-  `Contratos`= formatter("span", style = ~ formattable::style(color = ifelse(`Contratos` <= 3, "green","red"),font.weight = "bold"),
-                         ~ icontext(ifelse(`Contratos` <= 3, "thumbs-up", "thumbs-down"),`Contratos`)),
-  `MONTOADJSOLES` = color_bar("red")
+entidad_dt_num<-as.datatable(formattable(entidaddt_num, align =c("c","c","c","c","c"), list( 
+  `CONTRATOS`= formatter("span", style = ~ formattable::style(color = ifelse(`CONTRATOS` <= 3, "green","red"),font.weight = "bold"),
+                         ~ icontext(ifelse(`CONTRATOS` <= 3, "thumbs-up", "thumbs-down"),`CONTRATOS`)),
+  `MONTO ADJUDICADO EN SOLES`= color_bar("red")
 )))
-
 
 #III
 ##########LEYES
@@ -107,7 +101,42 @@ names(Leyes)="NORMATIVA PERTINENTE"
 #   `NORMATIVA PERTINENTE`=color_bar("skyblue")
 #   )))
 
+#IV- PROVEEDORES
+##############
+contr_prove<- select(contr_direc, "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")
+contr_prove<-contr_prove %>% 
+  group_by(PROVEEDOR,RUCPROVEEDOR,TIPOPROVEEDOR)%>%                             #Agrupar de PROVEEDOR.Si pones solo 1 y haces el summarize con RUC, saldrÃ¡ por separado por cada RUC. Yo quiero todo junto.
+  summarize(`MONTO ADJUDICADO EN SOLES` = sum(MONTO_SOLES_EN_MILLONES), CONTRATOS=n()) %>% 
+  arrange(desc(CONTRATOS))%>%
+  as.data.frame()
+#contr_prove[,4]
+
+contr_prove[,4]<-sapply(contr_prove[,4], redondeo)
+
+contr_prove<-as.datatable(formattable(contr_prove, align =c("c","c","c","c","c"), list( 
+  `CONTRATOS`= formatter("span", style = ~ formattable::style(color = ifelse(`CONTRATOS` <= 3, "green","red"),font.weight = "bold"),
+                         ~ icontext(ifelse(`CONTRATOS` <= 3, "thumbs-up", "thumbs-down"),`CONTRATOS`)),
+  `MONTO ADJUDICADO EN SOLES` = color_bar("red")
+)))
+
+contr_prove
+
+#Persona natural:
+per_nat<-select(contr_direc, "ENTIDAD", "PROVEEDOR","RUCPROVEEDOR", "TIPOPROVEEDOR","MONTO_SOLES_EN_MILLONES")%>%
+  filter(TIPOPROVEEDOR=="Persona Natural")%>%
+  group_by(PROVEEDOR,RUCPROVEEDOR)%>%
+  summarize(`MONTO ADJUDICADO EN SOLES`= sum(MONTO_SOLES_EN_MILLONES), CONTRATOS=n())%>%
+  arrange(desc(CONTRATOS)) #%>%
+
+per_nat[,3]<-sapply(per_nat[,3],redondeo)
 
 
 
+per_nat<-as.datatable(formattable(per_nat, align =c("c","c","c","c","c"), list( 
+  `CONTRATOS`= formatter("span", style = ~ formattable::style(color = ifelse(`CONTRATOS` <= 3, "green","red"),font.weight = "bold"),
+                         ~ icontext(ifelse(`CONTRATOS` <= 3, "thumbs-up", "thumbs-down"),`CONTRATOS`)),
+  `MONTO ADJUDICADO EN SOLES`= color_bar("red")
+)))
+
+per_nat
 
