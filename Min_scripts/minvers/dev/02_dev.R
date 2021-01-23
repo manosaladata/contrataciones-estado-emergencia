@@ -23,6 +23,11 @@ golem::add_module( name = "mod1" ) # Name of the module
 golem::add_module( name = "DT" ) # Name of the module
 golem::add_module( name =  "contr_prove" )
 golem::add_module( name =  "monto_dep" )
+golem::add_module( name =  "raros" )
+golem::add_module( name =  "plotly" )
+golem::add_module( name =  "funnel_n" )
+golem::add_module( name =  "ggplot" )
+
 
 
 ## Add helper functions ----
