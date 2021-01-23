@@ -60,14 +60,14 @@ app_ui <- function(request) {
                    icon = icon("arrow-alt-circle-right"),
                    menuSubItem("Todos los Proveedores", tabName="contr_prove"),
                    menuSubItem("Personas Naturales",tabName = "per_nat"),
-                   menuSubItem("Top 100 de Proveedores",tabName= "raros", icon = shiny::icon("eye"))
+                   menuSubItem("Top 100 de Proveedores",icon = shiny::icon("eye"))
           ),
           menuItem("Rubros",id = "chartsID",icon = icon("arrow-alt-circle-right"),
-                   menuSubItem("Por Montos", tabName = "rubros_funnel"),    #Más icons:https://fontawesome.com/icons?d=gallery
-                   menuSubItem("Por Número de Contratos", tabName = "rubros_funnel_n")
+                   menuSubItem("Por Montos"),    #Más icons:https://fontawesome.com/icons?d=gallery
+                   menuSubItem("Por Número de Contratos")
           ),
           menuItem("Por entidad",id = "chartsID",icon = icon("arrow-alt-circle-right"), #el tab Name=contract, permite relacionar el histograma
-                   menuSubItem("TOP 10 de Entidades", tabName = "entnum"),
+                   menuSubItem("TOP 10 de Entidades"),
                    menuSubItem("Entidades en General")),
           #menuSubItem("Entidades por Monto",tabName="entidt_mon")),
           menuItem("Buscador de RUC",icon = icon("arrow-alt-circle-right")),
@@ -100,15 +100,7 @@ app_ui <- function(request) {
                   fluidRow(div(mod_contr_prove_ui("contr_prove_ui_1"),
                                style = "font-size: 100%; width: 100%;overflow-x: scroll"))
                   
-          ),
-          tabItem(tabName = "raros",
-                  mod_raros_ui("raros_ui_1")),
-          tabItem(tabName = "rubros_funnel",
-                  mod_plotly_ui("plotly_ui_1")),
-          tabItem(tabName = "rubros_funnel_n",
-                  mod_funnel_n_ui("funnel_n_ui_1")),
-          tabItem(tabName = "entnum",
-                  mod_ggplot_ui("ggplot_ui_1"))
+          )
   
   
   
