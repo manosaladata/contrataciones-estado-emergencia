@@ -1,0 +1,11 @@
+Package: opencontracts
+Type: Package
+Title: Análisis de contratos directos durante el Covid-19 en Perú
+Version: 0.1.0
+Author: Abner Francisco Casallo Trauco
+Maintainer: Abner Francisco Casallo Trauco <abner.casallo@unmsm.edu.pe>
+Description: Contiene funciones para analizar los contratos directos por Covid en Perú
+License: CGPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
