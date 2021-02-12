@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/nav_resp_css.css">
+    
+</head>
+<body>
+    <nav>
+        <button class="nav-bot" onclick="acc()">menu</button>
+        <a href="#" class="est desaparece">inicio</a>
+        <a href="#" class="est desaparece">entrada</a>
+        <a href="#" class="est desaparece">lo que sea</a>
+
+
+    </nav>
+    <!-- se puede agregar el js directamente, pero 
+    cuando es largo se recomenda aparte -->
+    <!-- haremos una función para el click -->
+    <!-- tiene que ir con un "()" -->
+    <!-- toggle saca o coloca el valor de la clase -->
+    <script>
+
+        function acc(){
+            console.log("Esta funcionando el botón");
+            var ancla= document.getElementsByClassName("est");
+            for (var i = 0; i< ancla.length; i++) {
+                ancla[i].classList.toggle("desaparece");
+                
+            }
+
+        }
+    </script>
+</body>
+</html>

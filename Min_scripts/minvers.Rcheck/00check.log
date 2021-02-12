@@ -1,0 +1,16 @@
+* using log directory 'D:/GITHUB/BESTMD/contrataciones-estado-emergencia/Min_scripts/minvers.Rcheck'
+* using R version 4.0.3 (2020-10-10)
+* using platform: x86_64-w64-mingw32 (64-bit)
+* using session charset: ISO8859-1
+* using options '--no-manual --as-cran'
+* checking for file 'minvers/DESCRIPTION' ... OK
+* this is package 'minvers' version '0.0.0.9000'
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... ERROR
+Namespace dependencies not required: 'leaflet', 'shinydashboard', 'tmap'
+
+See section 'The DESCRIPTION file' in the 'Writing R Extensions'
+manual.
+* DONE
+Status: 1 ERROR

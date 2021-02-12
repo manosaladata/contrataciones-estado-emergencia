@@ -4,13 +4,16 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here 
     fluidPage(
-      h1("contratosemergencia")
+      h1("contratosemergencia"),
+      mod_mod_ui("mod_ui_1")
     )
   )
 }

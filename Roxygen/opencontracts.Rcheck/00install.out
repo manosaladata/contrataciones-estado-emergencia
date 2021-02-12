@@ -1,10 +1,15 @@
 * installing *source* package 'opencontracts' ...
 ** using staged installation
 ** R
+** data
+*** moving datasets to lazyload DB
+** inst
 ** byte-compile and prepare package for lazy loading
 ** help
 *** installing help indices
+*** copying figures
 ** building package indices
+** installing vignettes
 ** testing if installed package can be loaded from temporary location
 *** arch - i386
 *** arch - x64

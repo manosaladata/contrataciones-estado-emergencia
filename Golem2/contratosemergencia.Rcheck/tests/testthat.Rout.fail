@@ -1,0 +1,40 @@
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> library(contratosemergencia)
+> 
+> test_check("contratosemergencia")
+== Failed tests ================================================================
+-- Error (test-golem-recommended.R:6:3): app ui --------------------------------
+Error: could not find function "leafletOutput"
+Backtrace:
+     x
+  1. \-contratosemergencia:::app_ui() test-golem-recommended.R:6:2
+  2.   +-htmltools::tagList(...)
+  3.   | \-rlang::dots_list(...)
+  4.   +-shiny::fluidPage(h1("contratosemergencia"), mod_mod_ui("mod_ui_1"))
+  5.   | +-shiny::bootstrapPage(...)
+  6.   | \-htmltools::div(class = "container-fluid", ...)
+  7.   |   \-rlang::dots_list(...)
+  8.   \-contratosemergencia:::mod_mod_ui("mod_ui_1")
+  9.     \-htmltools::tagList(h2("MAPA"), leafletOutput(ns("map_mon")))
+ 10.       \-rlang::dots_list(...)
+
+[ FAIL 1 | WARN 0 | SKIP 0 | PASS 2 ]
+Error: Test failures
+Execution halted

@@ -6,7 +6,9 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList 
+#' @importFrom shiny NS tagList
+#' @import leaflet
+#' @import tmap
 
 
 
@@ -17,6 +19,7 @@ library(tmap)
 library(readxl)
 library(leaflet)
 library(here)
+library(tmaptools)
 
 
 #https://www.geogpsperu.com/2018/02/limite-departamental-politico-shapefile.html
@@ -135,7 +138,7 @@ map_num<-tm_shape(departamentos_numero ) +
                color.light = 'black',
                position = c(0.5,0.03))
 
-
+#save(map_num, file = "mapa.Rdata")
 
 
 mod_mod1_ui <- function(id){

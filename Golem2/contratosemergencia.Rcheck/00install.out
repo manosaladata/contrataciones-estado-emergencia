@@ -1,0 +1,18 @@
+* installing *source* package 'contratosemergencia' ...
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Warning: namespace 'leaflet' is not available and has been replaced
+by .GlobalEnv when processing object 'map_mon'
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+*** arch - i386
+*** arch - x64
+** testing if installed package can be loaded from final location
+*** arch - i386
+*** arch - x64
+** testing if installed package keeps a record of temporary installation path
+* DONE (contratosemergencia)

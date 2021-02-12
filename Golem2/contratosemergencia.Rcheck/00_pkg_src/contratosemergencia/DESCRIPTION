@@ -1,0 +1,17 @@
+Package: contratosemergencia
+Title: Contratos de emergencia Covid-19
+Version: 0.0.0.9000
+Authors@R: person('Abner Francisco', 'Casallo Trauco', email = 'abner.casallo@unmsm.edu.pe', role = c('cre', 'aut'))
+Description: Análisis de los contratos de emergencia durante el periodo de
+  emergencia por el Covid-19.
+License: What license is it under?
+Imports: config, golem, shiny, processx, attempt, DT, glue, htmltools
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: testthat
+NeedsCompilation: no
+Packaged: 2021-02-10 05:25:35 UTC; abner
+Author: Abner Francisco Casallo Trauco [cre, aut]
+Maintainer: Abner Francisco Casallo Trauco <abner.casallo@unmsm.edu.pe>
+Depends: R (>= 3.5.0)

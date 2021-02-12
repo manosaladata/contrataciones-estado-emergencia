@@ -9,7 +9,7 @@ library(leaflet)
 #https://www.geogpsperu.com/2018/02/limite-departamental-politico-shapefile.html
 
 #####Directorio y Data##############################################
-setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/App-1/modules")
+#setwd("D:/Git Hub-BEST/contrataciones-estado-emergencia/App-1/modules")
 
 contr_direc <- read_excel("Data/CONOSCE_CONTRATACIONDIRECTA.xlsx")
 contr_direc[,28]<-sapply(contr_direc[,28],function(x)x/1000000)

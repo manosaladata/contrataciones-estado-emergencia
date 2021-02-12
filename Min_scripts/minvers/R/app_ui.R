@@ -68,14 +68,14 @@ app_ui <- function(request) {
           ),
           menuItem("Por entidad",id = "chartsID",icon = icon("arrow-alt-circle-right"), #el tab Name=contract, permite relacionar el histograma
                    menuSubItem("TOP 10 de Entidades", tabName = "entnum"),
-                   menuSubItem("Entidades en General")),
+                   menuSubItem("Entidades en General", tabName = "entotal_num")),
           #menuSubItem("Entidades por Monto",tabName="entidt_mon")),
-          menuItem("Buscador de RUC",icon = icon("arrow-alt-circle-right")),
-          menuSubItem("Buscador del OSCE",icon = icon("arrow-alt-circle-right")),
-          menuItem ("Guía Normativa",icon = icon("arrow-alt-circle-right")),
-          menuItem("Repositorio de Git-Hub", icon=icon("github-square")),
-          menuItem("Agradecimientos",icon = icon("hands")),
-          menuItem("Donaciones", icon=icon("hand-holding-heart")),
+          menuItem("Buscador de RUC",tabName = "link_sunat" ,icon = icon("arrow-alt-circle-right")),
+          menuSubItem("Buscador del OSCE", tabName="detalle",icon = icon("arrow-alt-circle-right")),
+          menuItem ("Guía Normativa", tabName="derecho",icon = icon("arrow-alt-circle-right")),
+          menuItem("Repositorio de Git-Hub", tabName = "Git-Hub", icon=icon("github-square")),
+          menuItem("Agradecimientos",tabName="gracias", icon = icon("hands")),
+          menuItem("Donaciones", tabName="dona", icon=icon("hand-holding-heart")),
           textInput("text_input","Contáctenos", value="abner.casallo@unmsm.edu.pe"),
           
           textInput("text_input", "Aclaración", value="La información sobre sanciones y penalidades han sido obtenidas del buscador de proveedores y se actualiza cada cierto periodo (semanal o quincenal). En este sentido, es referencial. Para denuncias y otras cuestiones legales se debe verificar en la página del Buscador de Proveedores. Para cualquier consulta u observación no dude en contactarse con nosotros.
@@ -87,11 +87,26 @@ app_ui <- function(request) {
         tabItems(
           # First tab content
           tabItem(tabName = "map_mon",
-                  fluidPage(
+                  div(style="font-size: 100%; width:100%;overflow-x: scroll",
+                      
+                      fluidRow(
+                        column(width=8,  
+                               valueBox("9 Meses","Periodo: Marzo-Diciembre",icon=icon("hourglass-3"),color="yellow"),
+                               valueBoxOutput("num"),
+                               #valueBox("xx", "Monto Total", color = "green"),
+                               valueBoxOutput("monto")
+                               #infoBoxOutput("info"),
+                               
+                        )
+                        ,column(width = 4,
+                                imageOutput("manos", width="50%",height="150px")
+                        )),
+                  fluidRow(
+                    
                     box(title="MONTOS POR DEPARTAMENTO",status="primary",
                         solidHeader = T, mod_mod1_ui("mod1_ui_1"),
                         width=8, height=500),
-                    box(mod_monto_dep_ui("monto_dep_ui_1"),width=4))),
+                    box(mod_monto_dep_ui("monto_dep_ui_1"),width=4)))),
           tabItem(tabName="per_nat",
                   fluidPage(
                     h1("Nombre"),
@@ -108,7 +123,62 @@ app_ui <- function(request) {
           tabItem(tabName = "rubros_funnel_n",
                   mod_funnel_n_ui("funnel_n_ui_1")),
           tabItem(tabName = "entnum",
-                  mod_ggplot_ui("ggplot_ui_1"))
+                  mod_ggplot_ui("ggplot_ui_1"),
+                  mod_ggplot2_ui("ggplot2_ui_1"))
+          # ,tabItem(tabName = "entmon",
+          #         mod_ggplot2_ui("ggplot2_ui_1"))
+          ,tabItem(tabName = "entotal_num",
+            mod_ent_dt_mon_ui("ent_dt_mon_ui_1")
+          ),
+          tabItem(
+            tabName = "link_sunat",
+            fluidRow(
+              div(tags$iframe(
+                seamless = "seamless", 
+                src = "https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/frameCriterioBusqueda.jsp", 
+                height = 800, width = 1000
+              ),style = "font-size: 100%; width: 100%;overflow-x: scroll")
+            )),
+          tabItem(tabName = "detalle",
+                  h1("BUSCADOR DE PROVEEDORES",style="font-family:Impact"),
+                  p(style="font-family:Impact", 
+                    "¿Algún proveedor le llamó la atención? Para una búsqueda detallada puede acceder
+                                al buscador de proveedores del Osce:",
+                    a("BUSCADOR DE PROVEEDORES",
+                      href="https://apps.osce.gob.pe/perfilprov-ui/"))
+                  
+          ),
+          tabItem(tabName="dona",
+                  h1("DONACIONES",style = "font-family:Impact"),
+                  p(style="font-family:Georgia","Puedes apoyar a mantener este proyecto en la web
+                                donando a través de",a("Buymeacoffe", href="https://www.buymeacoffee.com/AbnerCasallo"),
+                    "o la siguiente cuenta...")),
+          tabItem(tabName="derecho",
+                  fluidRow(tags$head(
+                    tags$link(rel = "stylesheet", type = "text/css", href = "derecho.css")
+                  ),
+                  includeHTML("www/derecho.html"))
+          ),
+          tabItem(tabName = "Git-Hub",
+                  h1("PROYECTO OPEN SOURCE",style = "font-family:Impact, cursive; font-weight: 500; line-height: 1.1; 
+                                 color:indigo;"),
+                  p(style="font-family:Impact", 
+                    "Usted puede contrubuir con nosotros a través de nuestro repositorio de",
+                    a("Git-Hub",
+                      href="https://github.com/manosaladata/contrataciones-estado-emergencia.git"))
+                  
+          ),
+          tabItem(tabName="gracias",
+                  h1("AGRADECIMIENTOS",style = "font-family:Impact"),
+                  p(style="font-family:Georgia", 
+                    "Este proyecto no hubiese sido posible sin el apoyo de muchas personas.
+                                En particular un agradecimiento al equipo de Manos a la Data, es especial a Arturo Chian",
+                    # a("Arturo Chian",href="https://arturochian.com/"), 
+                    "por el apoyo constante durante todo este periodo.
+                                Asimismo, un agracedimiento especial a Luigi Castro por sus valiosos insights en temas
+                                de Contración Pública.")
+          )
+          
   
   
   

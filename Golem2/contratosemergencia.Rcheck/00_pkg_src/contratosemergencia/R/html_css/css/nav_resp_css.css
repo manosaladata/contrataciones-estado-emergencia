@@ -1,0 +1,60 @@
+.est{
+    /* un display para ponerlo en bloque en linea, esto ayuda con flex */
+    display: inline-block;
+    background: blueviolet;
+    color: brown;
+    padding: 30px 10px;
+    text-decoration: none;
+    margin: 10px 30px;
+
+}
+
+.est:hover{
+    background: cadetblue;
+}
+
+nav{
+
+    background: crimson;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* modo responsivo, con una
+pequeña variación en nav, fondo negro,
+ si es hasta max 600 px*/
+
+ .nav-bot{
+     background: purple;
+     color: red;
+     padding: 10px 0px;
+     border: 2px solid white;
+     display: none;
+
+
+ }
+
+ /* los mediaqueris al final */
+@media (max-width: 600px){
+    nav{
+        background: chartreuse;
+        flex-direction: column;
+    }
+
+    .est{
+        /* ponemos un margen de 10 para altura y anchos */
+        margin: 20px 10px;
+    }
+    
+    .nav-bot{
+        display: inline-block;
+    }
+
+    .desaparece{
+        display: none;
+    }
+
+
+
+}

@@ -1,0 +1,78 @@
+
+/* *:estilos generales */
+*{
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+
+}
+
+.padre{
+    /* flex solo sale feo, necesitamos el flow en columnas */
+    display: flex;
+    flex-flow: column nowrap;
+}
+  .header{
+    background: cornsilk;
+    display: flex;
+    flex-flow: column nowrap;
+
+  }
+     .menu{
+         background: brown;
+         display: flex;
+         flex-flow: row nowrap;
+         align-items: center;
+     }
+        .logo{
+            background: cadetblue;
+            flex: 1 1 auto;
+            height: 50px;
+        }
+        .nav{
+            background: cadetblue;
+            flex: 5 1 auto;
+            height: 50px;
+        }
+        .social{
+            background: cadetblue;
+            flex: 1 1 auto;
+            height: 50px;
+        }
+    .texto-principal{
+        background: orange;
+    }
+        h1{
+            background: yellow;
+        }
+
+
+  .section{
+    background: rgb(211, 173, 22);
+    /* es necesario colocar el flex en el nodo superior para luego aplicarlo en los hijos */
+    display: flex;
+  }
+       .articulos{
+           background: yellowgreen;
+           flex: 1 1 auto;
+       }
+         article{
+             background: tomato;
+         }
+         navegacion{
+             background: tomato;
+         }
+  .aside{
+      background: yellow;
+      flex: 1 1 auto;
+  }
+       .publicidad{
+           background: yellowgreen;
+           flex: 1 1 auto;
+       }
+  .footer{
+    background: cornsilk;
+  }
+     .pie{
+         background: yellowgreen;
+     }

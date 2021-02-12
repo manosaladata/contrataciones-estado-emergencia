@@ -1,0 +1,32 @@
+h2{
+    color:blue;
+    font-size: 50px;
+    font: bold;
+}
+
+#unic{
+    color: rgb(49, 226, 43);
+}
+
+.naranja{
+    color: orange;
+
+}
+
+.fondo{
+    background: rgb(221, 204, 11);
+}
+
+.margen{
+    /* margin-left: 100px; */
+    /* con este siguiente marge se aplica a los cuatro lados, queda mejor */
+    /* margin: 100px; */
+    /* Pero es posible que por ej quiera aplica 200px arriba y abajo y 100 a la izquierda y a la derecha */
+    margin: 200px 100px;
+}
+
+.padding{
+    background: palegreen;
+    /* con 100 px o 200, acá usamos 100 */
+    padding: 100px;
+}

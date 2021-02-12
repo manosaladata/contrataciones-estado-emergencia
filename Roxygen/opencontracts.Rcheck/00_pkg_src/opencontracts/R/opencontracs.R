@@ -1,4 +1,4 @@
-#' opencontracts package
+#' OpenContracts package
 #' Contiene funciones para analizar los contratos directos por Covid en Perú
 #'
 #' @docType package

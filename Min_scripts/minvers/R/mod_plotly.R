@@ -7,6 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @import plotly readxl here tidyverse
 
 library(readxl)
 library(tidyverse)

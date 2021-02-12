@@ -15,7 +15,20 @@
 
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
-usethis::use_package( "thinkr" )
+# usethis::use_package( "thinkr" )
+# usethis::use_package( "readxl" )
+# usethis::use_package( "tidyverse")
+# usethis::use_package( "formattable")
+# usethis::use_package( "DT")
+# usethis::use_package( "here")
+# usethis::use_package( "leaflet")
+# usethis::use_package( "tmap")
+# usethis::use_package( "sf")
+# usethis::use_package( "ggrepel")
+# usethis::use_package( "here")
+# usethis::use_package( "plotly")
+
+
 
 ## Add modules ----
 ## Create a module infrastructure in R/
@@ -27,6 +40,8 @@ golem::add_module( name =  "raros" )
 golem::add_module( name =  "plotly" )
 golem::add_module( name =  "funnel_n" )
 golem::add_module( name =  "ggplot" )
+golem::add_module( name =  "ggplot2" )
+golem::add_module( name =  "ent_dt_mon" )
 
 
 
@@ -63,5 +78,5 @@ usethis::use_appveyor()
 
 # You're now set! ----
 # go to dev/03_deploy.R
-rstudioapi::navigateToFile("dev/03_deploy.R")
+rstudioapi::navigateToFile("03_deploy.R") #dev/
 

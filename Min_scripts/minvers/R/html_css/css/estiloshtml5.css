@@ -1,0 +1,50 @@
+/* como nav es un atributo de html, ponemos nav directamente */
+nav{
+    background:rgb(67, 68, 66) ;
+    color: indigo;
+    padding: 100px;
+}
+
+.columna{
+    background: brown;
+    padding: 20px;
+    width: 20%;
+    margin: 10px;
+}
+
+/* 2. aplicando flex para separar en columnas */
+.master{
+
+    display: flex;
+}
+
+/*  3. hoover */
+/* 3.1 En botones */
+
+/* color por defecto */
+button{
+    background: crimson;
+    color: rgb(38, 25, 216);
+}
+
+/* color al poner el mouse encima */
+button:hover{
+    background: darkgreen;
+}
+
+/* color al activar el botón (hacer click) */
+button:active{
+    background: darkslateblue;
+}
+
+/* elementos de bloque y de línea */
+h1{
+    background: gold;
+    display: inline-block;
+}
+
+.bloque{
+    background: gold;
+    display: block;  
+}
+

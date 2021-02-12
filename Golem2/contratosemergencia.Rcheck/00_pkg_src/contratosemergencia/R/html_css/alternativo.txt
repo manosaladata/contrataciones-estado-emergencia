@@ -1,0 +1,9 @@
+#codigos alternativos:
+
+#Para usar css con style. 
+    <style>
+    h2{color:red
+    }
+    </style>
+
+#Es mejor crear un script aparte
