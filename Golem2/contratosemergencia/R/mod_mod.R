@@ -20,7 +20,7 @@ library(tmaptools)
 
 
 
-load("mapa.Rdata")
+load("mapamonto.rdata")
 map_mon
 
 

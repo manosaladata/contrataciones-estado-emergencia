@@ -48,9 +48,9 @@ checkRd: (5) opencontracts.Rd:0-11: Must have a \description
 * checking Rd cross-references ... OK
 * checking for missing documentation entries ... WARNING
 Undocumented code objects:
-  'data120'
+  'data120' 'map_mon'
 Undocumented data sets:
-  'data120'
+  'data120' 'map_mon'
 All user-level objects in a package should have documentation entries.
 See chapter 'Writing R documentation files' in the 'Writing R
 Extensions' manual.
@@ -61,8 +61,9 @@ Extensions' manual.
 * checking contents of 'data' directory ... OK
 * checking data for non-ASCII characters ... WARNING
   Warning: found non-ASCII strings
-  'JORGE PE<c3><91>A S A JORPESA;20101015492;27/01/1993;17;1.13589603;13;0;1' in object 'data120'
-  'Proveedor.RUCProveedor.Fecha.de.Inscripci<c3><b3>n.N<c3><ba>mero.de.Trabajadores.en.Octubre..Moto.Adjudicado..millones.de.soles...Contratos.SANCIONES.DEL.TCE.PENALIDAD.POR.INCUMPLIMIENTO' in object 'data120'
+  'JORGE PE<c3><91>A S A JORPESA' in object 'data120'
+  'Fecha.de.Inscripci<c3><b3>n' in object 'data120'
+  'N<c3><ba>mero.de.Trabajadores.en.Octubre.' in object 'data120'
 * checking data for ASCII and uncompressed saves ... OK
  WARNING
 'qpdf' is needed for checks on size reduction of PDFs
