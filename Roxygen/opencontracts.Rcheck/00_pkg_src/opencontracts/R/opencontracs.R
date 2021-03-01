@@ -9,3 +9,12 @@
 NULL
 
 
+#' Análisis de contratos públicos directos durante el Covid-19.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name bancos
+#' @usage data(bancos)
+#' @format Base de datos para trabajar data de los indicadores financieros de los bancos locales.
+#'
+NULL

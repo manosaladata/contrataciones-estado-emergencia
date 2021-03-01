@@ -9,3 +9,12 @@
 NULL
 
 
+#' Análisis de contratos públicos directos durante el Covid-19.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name data120
+#' @usage data(data120)
+#' @format Base de datos del ranking  120
+#'
+NULL

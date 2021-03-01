@@ -54,7 +54,10 @@ Undocumented data sets:
 All user-level objects in a package should have documentation entries.
 See chapter 'Writing R documentation files' in the 'Writing R
 Extensions' manual.
-* checking for code/documentation mismatches ... OK
+* checking for code/documentation mismatches ... WARNING
+Data with usage in documentation object 'bancos' but not in code:
+  'bancos'
+
 * checking Rd \usage sections ... OK
 * checking Rd contents ... OK
 * checking for unstated dependencies in examples ... OK
@@ -76,4 +79,4 @@ Extensions' manual.
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 4 WARNINGs, 1 NOTE
+Status: 5 WARNINGs, 1 NOTE
