@@ -4,6 +4,7 @@ packs=c("opencontracts","tidyverse","formattable","readxl","data.table","rsconne
         "leaflet")
 invisible(lapply(packs,library,character=T))
 data120<-read.csv("DATA_CONSOLIDADA_120.csv", sep= ";")
+names(data120)[3:5]=c('Fecha_inscripción', 'Num_Trabajadores',"Monto_Soles_Millones")
 datatotal<-read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
 
 tabla120<-as.datatable({formattable(data120, align =c("c","c","c","c","c","c","c","c"), list( ###con align alineamos: ",align =c("l","c","c","c","c", "c", "c", "c", "r")"
@@ -17,6 +18,7 @@ tabla120<-as.datatable({formattable(data120, align =c("c","c","c","c","c","c","c
 
 })
 
+usethis::use_data(data120, overwrite = TRUE)
 usethis::use_data(tabla120, overwrite = TRUE)
 # save(data120, file = "data120.RData")
 #save(datatotal, file = "datatotal.RData")
