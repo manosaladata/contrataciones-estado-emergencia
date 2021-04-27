@@ -29,6 +29,8 @@ datostotales<-data('datatotal')
 ```
 
 Veamos primero la data de los 120 primeros proveedores.Al respecto, "tabla120" agrupa a los 120 primeros proveedores añadiendo información extra a los proporcionados en la data general.
+
+
 ```{r setup}
 
 

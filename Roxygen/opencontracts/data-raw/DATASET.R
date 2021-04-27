@@ -5,7 +5,7 @@ packs=c("opencontracts","tidyverse","formattable","readxl","data.table","rsconne
 invisible(lapply(packs,library,character=T))
 data120<-read.csv("DATA_CONSOLIDADA_120.csv", sep= ";")
 names(data120)[3:5]=c('Fecha_inscripción', 'Num_Trabajadores',"Monto_Soles_Millones")
-datatotal<-read_excel("CONOSCE_CONTRATACIONDIRECTA.xlsx")
+datatotal<-read_excel("data-raw/CONOSCE_CONTRATACIONDIRECTA.xlsx")
 
 tabla120<-as.datatable({formattable(data120, align =c("c","c","c","c","c","c","c","c"), list( ###con align alineamos: ",align =c("l","c","c","c","c", "c", "c", "c", "r")"
   `Contratos`= formatter("span", style =  ~ formattable::style(color = ifelse(`Contratos` <= 3, "green","red"),font.weight = "bold"),
@@ -18,8 +18,40 @@ tabla120<-as.datatable({formattable(data120, align =c("c","c","c","c","c","c","c
 
 })
 
+datatotal[,28]<-sapply(datatotal[,28],function(x)x/1000000)#NO APLICAR REDONDEO, ESTÁ EN MILLONES
+names(datatotal)[28]="MONTO_SOLES_EN_MILLONES"
+names(datatotal)[31]="RUCPROVEEDOR"
+options(scipen=999)
+
+zonas<- select(datatotal, "ENTIDAD_DEPARTAMENTO","MONTO_SOLES_EN_MILLONES")
+
+n_dep<-zonas %>%#
+  group_by(ENTIDAD_DEPARTAMENTO) %>%
+  summarise(MONTOADJUDICADOSOLES=sum(MONTO_SOLES_EN_MILLONES),numero=n())%>%
+  arrange(desc(numero))%>%
+  as.data.frame()
+n_dep[,2]<-sapply(n_dep[,2],redondeo)
+#n_dep
+
+departamentos<-ggplot(n_dep, aes(x =numero, y=ENTIDAD_DEPARTAMENTO))+
+  geom_bar(stat="identity", position="dodge",fill="white",col="steelblue")+
+  labs(title="NÚMERO DE CONTRATOS ADJUDICADOS POR DEPARTAMENTO",
+       x="Número de contratos", y="Departamentos", caption="Manos a la data")+
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+
+
+
 usethis::use_data(data120, overwrite = TRUE)
 usethis::use_data(tabla120, overwrite = TRUE)
+usethis::use_data(datatotal, overwrite = TRUE)
+usethis::use_data(departamentos, overwrite = TRUE)
 # save(data120, file = "data120.RData")
 #save(datatotal, file = "datatotal.RData")
 
