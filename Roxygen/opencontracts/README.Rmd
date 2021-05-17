@@ -20,14 +20,14 @@ knitr::opts_chunk$set(
 
 El objetivo de opencontracts es brindar funciones para analizar los contratos directos por Covid en Perú. El paquete nos permitirá analizar de forma rápida la situación de los contratos por emergencia durante el periodo de emergencia por el Covid-19. Los paqutes que usaremos:
 
-```{r setup}
+```{r }
 packs=c("opencontracts","tidyverse","formattable","readxl","data.table","rsconnect","tmap",
         "leaflet")
 invisible(lapply(packs,library,character=T))
 
 datos12<-data('data120')
 tabla120<-data('tabla120')
-datostotales<-data('datatotal')
+data('datatotal')
 
 ```
 
