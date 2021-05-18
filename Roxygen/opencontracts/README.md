@@ -27,6 +27,21 @@ Podemos usar el paquete con `library()`
 
     library(opencontracts)
 
+Los comandos de utilidad son los siguientes:
+
+    #El comando "data" nos permitirá acceder a las tablas y gráficas guardadas por defecto en el paquete.
+    #data120 nos permitirá acceder al top de los 120 contratistas de acuerdo al monto 
+    data('data120')
+    #datatotal nos permitirá acceder al total de datos proveídos públicamente por el OSCE
+    data('datatotal')
+    #tabla120 nos permitirá acceder a un datatable delos 120 primeros contratistas de acuerdo al monto
+    data('tabla120')
+    #departamentos nos permitirá acceder a un gráfico del número de contratos por departamento
+    data('departamento')
+    
+    
+<img src="Rplot_dep.png" align="center" />
+    
 
 
 Codigo de conducta
